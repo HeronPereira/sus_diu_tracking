@@ -1,0 +1,246 @@
+import dayjs, { Dayjs } from 'dayjs';
+export function getEscolaridade(key: number): string
+{
+    const escolaridade = ['Analfabeta', 
+                        'Fundamental - Incompleto',
+                        'Fundamental - Completo',
+                        'Médio - Incompleto',
+                        'Médio - Completo',
+                        'Superior - Incompleto',
+                        'Superior - Completo',
+                        'Pós-graduação - Incompleto',
+                        'Pós-graduação - Completo'];
+
+    return escolaridade[key];
+}
+
+
+export function getCentroSaudeReferencia(key: number): string
+{
+    const unidades_atendimentos = ['Abraão',
+    'Agronômica',
+    'Alto Ribeirão',
+    'Armação',
+    'Balneário',
+    'Barra da Lagoa',
+    'Cachoeira do Bom Jesus',
+    'Caieira da Barra do Sul',
+    'Campeche',
+    'Canasvieiras',
+    'Canto da Lagoa',
+    'Capivari',
+    'Capoeiras',
+    'Carianos',
+    'Centro',
+    'Coloninha',
+    'Coqueiros',
+    'Córrego Grande',
+    'Costa da Lagoa',
+    'Costeira do Pirajubaé',
+    'Estreito',
+    'Fazenda do Rio Tavares',
+    'Ingleses',
+    'Itacorubi',
+    'Jardim Atlântico',
+    'João Paulo',
+    'Jurerê',
+    'Lagoa da Conceição',
+    'Monte Cristo',
+    'Monte Serrat',
+    'Morro das Pedras',
+    'Novo Continente',
+    'Pantanal',
+    'Pântano do Sul',
+    'Ponta das Canas',
+    'Prainha',
+    'Ratones',
+    'Ribeirão da Ilha',
+    'Rio Tavares',
+    'Rio Vemelho',
+    'Saco dos Limões',
+    'Saco Grande',
+    'Santinho',
+    'Santo Antônio de Lisboa',
+    'Sapé',
+    'Tapera',
+    'Trindade',
+    'Vargem Grande',
+    'Vargem Pequena',
+    'Vila Aparecida',
+    'Policlínica Centro',
+    'Policlínica Rio Tavares',
+    'Policlínica Continente',
+    'Policlínica da Mulher e da Criança']
+
+    return(unidades_atendimentos[key]);
+}
+
+export function centrosDigitos(){
+    const unidades = ['Abraão',
+    'Agronômica',
+    'Alto Ribeirão',
+    'Armação',
+    'Balneário',
+    'Barra da Lagoa',
+    'Cachoeira do Bom Jesus',
+    'Caieira da Barra do Sul',
+    'Campeche',
+    'Canasvieiras',
+    'Canto da Lagoa',
+    'Capivari',
+    'Capoeiras',
+    'Carianos',
+    'Centro',
+    'Coloninha',
+    'Coqueiros',
+    'Córrego Grande',
+    'Costa da Lagoa',
+    'Costeira do Pirajubaé',
+    'Estreito',
+    'Fazenda do Rio Tavares',
+    'Ingleses',
+    'Itacorubi',
+    'Jardim Atlântico',
+    'João Paulo',
+    'Jurerê',
+    'Lagoa da Conceição',
+    'Monte Cristo',
+    'Monte Serrat',
+    'Morro das Pedras',
+    'Novo Continente',
+    'Pantanal',
+    'Pântano do Sul',
+    'Ponta das Canas',
+    'Prainha',
+    'Ratones',
+    'Ribeirão da Ilha',
+    'Rio Tavares',
+    'Rio Vemelho',
+    'Saco dos Limões',
+    'Saco Grande',
+    'Santinho',
+    'Santo Antônio de Lisboa',
+    'Sapé',
+    'Tapera',
+    'Trindade',
+    'Vargem Grande',
+    'Vargem Pequena',
+    'Vila Aparecida',
+    'Policlínica Centro',
+    'Policlínica Rio Tavares',
+    'Policlínica Continente',
+    'Policlínica da Mulher e da Criança']
+    
+    let  longest = unidades.sort(
+        function (a, b) {
+            return b.length - a.length;
+        }
+    )[0];
+    return longest;
+}
+
+export const defaultDictionary = { 
+    nome: 'AAA',
+    cpf: '01234567890',
+    cns: '012345678901234',
+    nascimento: dayjs(),
+    cep: '01234567',
+    endereco: 'aaa',
+    numero: '123',
+    complemento: 'aaa',
+    bairro: 'corrego',
+    cidade: 'florianopolis',
+    telefone: '01234567',
+    telefoneFamiliar: '01234567',
+    email: 'aaa@email.com',
+    cor: 'BRANCA',
+    estadoCivil: 'Solteira',
+    escolaridade: 'Analfabeta',
+    renda: '10000',
+    profissao: 'reporter',
+    equipeReferencia: 'aaa',
+    centroSaudeReferencia: 'Centro',
+
+//    // /* Historical Data */
+//     gestacoesAnteriores: '0',
+//     partosNormaisAnteriores: '0',
+//     partosCesarianasAnteriores: '0',
+//     abortosAnteriores: '0',
+//     dataUltimaGestacao: dayjs(),
+//     dataUltimaMenstruacao: dayjs(),
+//     diasMenstruada: '0',
+//     intervaloEntreCiclosMenstruais: '0',
+//     volumeMenstrual: 'Pequeno',
+//     colicas: 'Ausentes',
+//     contraceptivosAnteriores:' ',
+//     contraceptivosAtuais: ' ',
+//     ultimoPreventivoAlterado:' ',
+//     dataUltimoPreventivo: dayjs(),
+//     possuiQualIst: 'Sem IST',
+//     fezQualCirurgiaPelvicaUterina:'NA',
+//     problemasSaude: ' ',
+//     medicacaoEmUso: ' ',
+//     alergiaCobreMedicamento: ' ',
+//     fezQualExameAlteracaoUtero: ' ',
+//     examesAnteriores: ' ',
+//     porqueInserirDIU: 'Seguranca',
+//     duvidasSobreInsercaoDIU: ' ',
+//     possuiTermoConsentimento: false,
+
+//  //   /* PhysicalExam */
+//     alturacm: '170',
+//     pesokg:'70',
+//     imc: ' ',
+//     realizouTesteGravidez: ' ',
+//     resultadoTesteGravidez: ' ',
+//     seSemTesteDeGravidezPorque: ' ',
+
+//     qualAlteracaoInspecaoGenital: 'Nenhuma',
+   
+//     qualAlteracaoExameEspecular: 'Nenhuma',
+
+//  //   /* DIU Insertion */
+//     diuInserido:'SIM',
+//     seDiuNaoInseridoPorque: ' ',
+//     usoPrevioAINE: ' ',
+//     antissepsiaRealizadaCom: ' ',
+//     histerometria: '2',
+//     tamanhoFio: '2',
+//     modeloDiu: ' ',
+//     loteDiu: 'aaa',
+//     intercorrenciasDiu:' ',
+//     nivelDor:'0',
+//     profissionalInseriuNome:'aaa',
+//     profissionalInseriuCRMCoren:'111',
+//     centroSaudeInsercao: 'Centro',
+//     auxilioSegundoProfissional: ' ',
+//     profissionalAuxiliarNome:' ',
+//     profissionalAuxiliarCRMCoren:' ',
+
+//  //   /* Post DIU Insertion */
+//     dataAcompanhamento:dayjs(),
+//     diasSangramentoPosInsercao: ' ',
+//     nivelDorPosInsercao: '0',
+//     nivelSatisfacaoInsercao: ' ',
+//     dataUltimaMenstruacaoPosInsercao: dayjs(),
+//     diasMenstruadaPosInsercao: ' ',
+//     intervaloDiasUltimoCicloPosInsercao: ' ',
+//     volumeMenstrualPosInsercao:' ',
+//     colicasPosInsercao:' ',
+//     tamanhoFioCmPosInsercao: ' ',
+//     resultadoUSG:' ',
+//     intercorrenciasComunicadasPosInsercao: ' ',
+//     qualOutraIntercorrenciaPosInsercao: ' ',
+
+//  //   /* DIU Removal */
+//     dataRemocaoDIU: dayjs(),
+//     motivoRemocaoDIU:' ',
+//     prescricaoOutroContraceptivo:' ',
+//     seraInseridoNovoDIU: ' '
+};
+
+function utils(){
+
+}
+
+export default utils;
