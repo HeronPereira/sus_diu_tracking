@@ -22,7 +22,8 @@ import { Backdrop, Grid, Paper, Typography } from '@mui/material';
 
 
 
-export default function TabRegister() {
+export default function TabRegister({lookForCpf = '11111111111'}:{lookForCpf:string}) {
+  
   const [value, setValue] = React.useState('1');
   const router = useRouter();
 
@@ -30,15 +31,15 @@ export default function TabRegister() {
 
   //  TODO : Isso trocará quando for um caso de update
   // useState hook with default value
+  
   const [myDictionary, setMyDictionary] = React.useState(defaultDictionary);
   
-  // TODO : Criar um método para alterar se é criação ou update e trocar o valor da variável
-  const isPatientCreation = true;
-
-
+  const [isLoading, setIsLoading] = React.useState(true);
 
   const [triggerDictionaryUpdate, setTriggerDictionaryUpdate] = React.useState(false);
   
+  const [allowRequestDatabase, setAllowRequestDatabase] = React.useState(false);
+
   const handleUpdateDictionary = (newDictionary: any) => {
     setMyDictionary(newDictionary);
     setTriggerDictionaryUpdate(true);
@@ -53,35 +54,57 @@ export default function TabRegister() {
     setContinueRegistrationScreen(true);     
   }
 
-  const updatePatient = async () => {
-    await axios.put('/api/patients', myDictionary); 
+  const updatePatient = async (cpfSearched: string) => {
+    await axios.put('/api/patients/' + cpfSearched, myDictionary); 
     router.push('/cadastroPaciente'); 
-    console.log('Atualização Realizada com sucesso')
-    setContinueRegistrationScreen(false);
+
   }
 
+  
+
   React.useEffect(() => {
-    if (triggerDictionaryUpdate) {
+    const filledDictionary = async (cpfSearched: string) => {
+    
+      try {
+        const newDictionary = await axios.get('/api/patients/' + cpfSearched);
+        handleUpdateDictionary(newDictionary['data']);
+        
+       setIsLoading(false);
+
+      } 
+      catch (error) {
+        console.error(error);
+        console.log('Not possible to GET patient');
+        // setIsLoading(false);
+      }
+    }
+
+    filledDictionary(lookForCpf);
+  }, []);
+
+  React.useEffect(() => {
+    
+    // console.log('Updated Parent State:', myDictionary);
+    if (allowRequestDatabase) {
       // Perform the POST request or other logic with the updated state
-      console.log('Updated Parent State:', myDictionary);
-      // Make your POST request here
-      if(isPatientCreation)
+      if (myDictionary['cpf'] == '')
       {
-        console.log('Entrou na condição de criação')
-        console.log(isPatientCreation)
         createPatient();
       }
       else
       {
-        console.log('Não sei porque caralhas não entrou')
-        console.log(isPatientCreation)
+        updatePatient(lookForCpf);
       }
-      // postRequest(parentState);
+      setAllowRequestDatabase(false);
+    }
+    if (triggerDictionaryUpdate) {
+      // Perform the POST request or other logic with the updated state
+     console.log('dictionary updated:', myDictionary);
 
       // Reset triggerUpdate to false to avoid unnecessary calls
       setTriggerDictionaryUpdate(false);
     }
-  }, [triggerDictionaryUpdate, myDictionary]);
+  }, [allowRequestDatabase, myDictionary, triggerDictionaryUpdate]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -102,7 +125,9 @@ export default function TabRegister() {
     setContinueRegistrationScreen(false);
   }
 
-  
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Box sx={{ width: '100%', typography: 'body1' }}>
@@ -117,7 +142,7 @@ export default function TabRegister() {
             <Tab label="Remoção do DIU" value="6" />
           </TabList>
         </Box>
-        <TabPanel value="1"><PersonalDataForm info={myDictionary} setInfo={handleUpdateDictionary}/> </TabPanel>
+        <TabPanel value="1"><PersonalDataForm info={myDictionary} setInfo={handleUpdateDictionary} setReady={setAllowRequestDatabase}/> </TabPanel>
         <TabPanel value="2"> <HistoricalDataForm goBackFirstTab={setValue}  info={myDictionary} setInfo={handleUpdateDictionary}/></TabPanel>
         <TabPanel value="3"><PhysicalExamForm currentTab={value} setCurrentTab={setValue}  info={myDictionary} setInfo={handleUpdateDictionary}/> </TabPanel>
         <TabPanel value="4"><DiuInsertionForm currentTab={value} setCurrentTab={setValue}  info={myDictionary} setInfo={handleUpdateDictionary}/> </TabPanel>

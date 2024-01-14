@@ -417,7 +417,7 @@ const handleSend = () => {
                             setDataUltimaGestacaoPaciente(event)
                         
                         }
-                            } value={data_ultima_gestacao_paciente}
+                            } value={dayjs(data_ultima_gestacao_paciente)}
                             
                             format="DD/MM/YYYY" label="Data da última gestação"/>
                     </LocalizationProvider>
@@ -432,7 +432,7 @@ const handleSend = () => {
                             setDataUltimaMenstruacaoPaciente(event)
                         
                         }
-                            } value={data_ultima_menstruacao_paciente}
+                            } value={dayjs(data_ultima_menstruacao_paciente)}
                             
                             format="DD/MM/YYYY" label="Data da última menstruação"/>
                     </LocalizationProvider>
@@ -588,7 +588,7 @@ const handleSend = () => {
                             setDataUltimoPreventivoPaciente(event)
                         
                         }
-                            } value={data_ultimo_preventivo_paciente}
+                            } value={dayjs(data_ultimo_preventivo_paciente)}
                             
                             format="DD/MM/YYYY" label="Data da última menstruação"/>
                     </LocalizationProvider>

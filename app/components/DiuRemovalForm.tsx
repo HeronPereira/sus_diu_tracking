@@ -66,7 +66,7 @@ function DiuRemovalForm({currentTab, setCurrentTab, info, setInfo}:{currentTab: 
                             setDataRemocaoPaciente(event)
                         
                         }
-                            } value={data_remocao_paciente}
+                            } value={dayjs(data_remocao_paciente)}
                             
                             format="DD/MM/YYYY" label="Data de remoção do DIU"/>
                     </LocalizationProvider>

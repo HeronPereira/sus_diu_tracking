@@ -15,7 +15,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
 
-function PersonalDataForm ({ info, setInfo}:{info: any, setInfo: (inf: any) => void}) {
+function PersonalDataForm ({ info, setInfo, setReady}:{info: any, setInfo: (inf: any) => void,  setReady: (inf: boolean) => void}) {
 
 
 // Use the spread operator to create a copy of the current dictionary
@@ -51,6 +51,28 @@ const [centrodesaude_paciente, setCentroDeSaudePaciente] = useState(info['centro
 
 
 const [backdrop_show, setBackdropShow] = useState(false);
+
+const setEveryFieldData = () => {
+    setNomePaciente(info['nome']); //nome_paciente;
+    setCPFPaciente(info['cpf']); //cpf_paciente;
+    setCNSPaciente(info['cns']); //cns_paciente;
+    setNascimentoPaciente(info['nascimento']); //nascimento_paciente;
+    setCEPPaciente(info['cep']); //cep_paciente;
+    setEnderecoPaciente(info['endereco']); //endereco_paciente;
+    setNumeroPaciente(info['numero']); //numero_paciente;
+    setComplementoPaciente(info['complemento']); //complemento_paciente;
+    setBairroPaciente(info['bairro']); //bairro_paciente;
+    setCidadePaciente(info['cidade']); //cidade_paciente;
+    setTelefonePaciente(info['telefone']); //telefone_paciente;
+    setTelefonePaciente(info['telefoneFamiliar']); //telefoneFamiliar_paciente;
+    setRacaCorPaciente(info['cor']); //racacor_paciente;
+    setEstadoCivilPaciente(info['estadoCivil']); //estadocivil_paciente;
+    setEscolaridadePaciente(info['escolaridade']); //escolaridade_paciente;
+    setRendaMensalPaciente(info['renda']); //rendamensal_paciente;
+    setProfissaoPaciente(info['profissao']); //profissao_paciente;
+    setEquipeReferenciaPaciente(info['equipeReferencia']); //equipereferencia_paciente;
+    setCentroDeSaudePaciente(info['centroSaudeReferencia']); //centrodesaude_paciente;
+}
 
 
 const checkAllFieldsAreFine = () => {
@@ -134,7 +156,7 @@ const checkAllFieldsAreFine = () => {
 
 
 const handleSend = () => {
-        
+
         if(checkAllFieldsAreFine())
         {
  
@@ -160,7 +182,7 @@ const handleSend = () => {
                 updatedInfo['centroSaudeReferencia'] = centrodesaude_paciente;
 
                 setInfo(updatedInfo);
-
+                setReady(true);
             
         }
         else
@@ -224,7 +246,7 @@ const handleSend = () => {
                             setNascimentoPaciente(event);
                             }
                             }
-                            value={nascimento_paciente}
+                            value={dayjs(nascimento_paciente)}
                             
                             format="DD/MM/YYYY" label="Data de nascimento*"/>
                     </LocalizationProvider>

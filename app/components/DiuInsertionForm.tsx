@@ -12,6 +12,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { getCentroSaudeReferencia } from '../utils/utils';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 
 
 
@@ -121,7 +122,7 @@ function DiuInsertionForm ({currentTab, setCurrentTab, info, setInfo}:{currentTa
                             setDataInsercaoPaciente(event)
                         
                         }
-                            } value={data_insercao_paciente}
+                            } value={dayjs(data_insercao_paciente)}
                             
                             format="YYYY-MM-DD" label="Data de acompanhamento"/>
                     </LocalizationProvider>

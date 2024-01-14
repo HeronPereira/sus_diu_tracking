@@ -130,7 +130,7 @@ function PostDiuInsertionForm ({currentTab, setCurrentTab, info, setInfo}:{curre
                             setDataAcompanhamentoPaciente(event)
                         
                         }
-                            } value={data_acompanhamento_paciente}
+                            } value={dayjs(data_acompanhamento_paciente)}
                             
                             format="YYYY-MM-DD" label="Data de acompanhamento"/>
                     </LocalizationProvider>
@@ -180,7 +180,7 @@ function PostDiuInsertionForm ({currentTab, setCurrentTab, info, setInfo}:{curre
                             setDataUltimaMenstruacaoPosInsercaoPaciente(event)
                         
                         }
-                            } value={data_ultima_menstruacao_pos_insercao_paciente}
+                            } value={dayjs(data_ultima_menstruacao_pos_insercao_paciente)}
                             
                             format="YYYY/MM/DD" label="Data da última menstruação pós inserção"/>
                     </LocalizationProvider>

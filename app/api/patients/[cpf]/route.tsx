@@ -3,16 +3,16 @@ import schema from "../schema";
 import prisma from "@/prisma/client";
 
 export async function GET(request: NextRequest,
-    {params}: {params: {id: string}}) {
+    {params}: {params: {cpf: string}}) {
     
+    // realiza o pedido e retorna um body que a condição seja satisfeita (ou não caso não exista)
     const patient = await prisma.patient.findUnique(
         {
             where: {
-                id: parseInt(params.id)
+                cpf: params.cpf
             }
         }
     );
-
 
     if (!patient)
     {
@@ -21,15 +21,20 @@ export async function GET(request: NextRequest,
             {status: 404},
             );
     }
+
     return NextResponse.json(
         patient
         );
 }
 
-export async function PUT(request: NextRequest,
-    {params}: {params: {id: string}}) {
 
+export async function PUT(request: NextRequest,
+    {params}: {params: {cpf: string}}) {
+    
+    // realiza o pedido e retorna um body
     const body = await request.json();
+    
+    // Verifica se a estrutura do body está de acordo com a estrutura do schema do Zod
     const validation = schema.safeParse(body);
 
     if (!validation.success)
@@ -43,8 +48,7 @@ export async function PUT(request: NextRequest,
     const patient = await prisma.patient.findUnique(
         {
             where: {
-                id: parseInt(params.id),
-                cpf: body.cpf,
+                cpf: params.cpf,
             }
         }
     );
@@ -60,12 +64,9 @@ export async function PUT(request: NextRequest,
 
     const updatedPatient = await prisma.patient.update({
         where: {
-            id: parseInt(params.id)
+            cpf: patient.cpf
         },
-        data: {
-            name: body.name,
-            socialname: body.socialname,
-        }
+        data: body
     })
     return NextResponse.json(updatedPatient);
 }
