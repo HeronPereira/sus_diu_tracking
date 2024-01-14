@@ -20,7 +20,7 @@ import { string } from 'zod';
 
 
   
-function HistoricalDataForm ({ info, setInfo}:{info: any, setInfo: (inf: any) => void}) {
+function HistoricalDataForm ({goBackFirstTab, info, setInfo}:{goBackFirstTab: (inf: any) => void, info: any, setInfo: (inf: any) => void}) {
 
   // Use the spread operator to create a copy of the current dictionary
   const updatedInfo = { ...info };
@@ -213,86 +213,53 @@ function HistoricalDataForm ({ info, setInfo}:{info: any, setInfo: (inf: any) =>
   };
 
 
-  const [open, setOpen] = React.useState(false);
-
-
-
 
 const [backdrop_show, setBackdropShow] = useState(false);
-
+const [mustRegisterPersonalDataFirst, setMustRegisterPersonalDataFirst] = useState(false);
 
 const checkAllFieldsAreFine = () => {
-    if (nome_paciente == '' || nome_paciente == undefined || nome_paciente == null)
+
+    if (gestacoes_anteriores_paciente == '' || gestacoes_anteriores_paciente == undefined || gestacoes_anteriores_paciente == null)
     {
         return false;
     }
-    else if ((/^\d+$/.test(cpf_paciente) == false) || (cpf_paciente.length != 11))
-    {
-        return false; 
-    }
-    else if ((/^\d+$/.test(cns_paciente) == false) || (cns_paciente.length != 15))
-    {
-        return false; 
-    }
-    else if ((/^\d+$/.test(cep_paciente) == false) || (cep_paciente.length != 8))
-    {
-        return false; 
-    }
-    else if (endereco_paciente == '' || endereco_paciente == undefined || endereco_paciente == null)
+    else if (partos_normais_anteriores_paciente == '' || partos_normais_anteriores_paciente == undefined || partos_normais_anteriores_paciente == null)
     {
         return false;
     }
-    else if ((/^\d+$/.test(numero_paciente) == false))
-    {
-        return false; 
-    }
-    else if (complemento_paciente == '' || complemento_paciente == undefined || complemento_paciente == null)
+    else if (partos_cesarianas_anteriores_paciente == '' || partos_cesarianas_anteriores_paciente == undefined || partos_cesarianas_anteriores_paciente == null)
     {
         return false;
     }
-    else if (bairro_paciente == '' || bairro_paciente == undefined || bairro_paciente == null)
+    else if (abortos_anteriores_paciente == '' || abortos_anteriores_paciente == undefined || abortos_anteriores_paciente == null)
     {
         return false;
     }
-    else if (cidade_paciente == '' || cidade_paciente == undefined || cidade_paciente == null)
+    
+    else if (colicas_paciente == '' || colicas_paciente == undefined || colicas_paciente == null)
     {
         return false;
     }
-    else if ((/^\d+$/.test(telefone_paciente) == false))
-    {
-        return false; 
-    }
-    else if ((/^\d+$/.test(telefoneFamiliar_paciente) == false))
-    {
-        return false; 
-    }
-    else if (racacor_paciente == '' || racacor_paciente == undefined || racacor_paciente == null)
+  
+    else if (qual_ist_paciente == '' || qual_ist_paciente == undefined || qual_ist_paciente == null)
     {
         return false;
     }
-    else if (profissao_paciente == '' || profissao_paciente == undefined || profissao_paciente == null)
+    else if (qual_cirurgia_paciente == '' || qual_cirurgia_paciente == undefined || qual_cirurgia_paciente == null)
     {
         return false;
     }
-    else if (estadocivil_paciente == '' || estadocivil_paciente == undefined || estadocivil_paciente == null)
+    else if (porque_inserir_diu_paciente == '' || porque_inserir_diu_paciente == undefined || porque_inserir_diu_paciente == null)
     {
         return false;
     }
-    else if (escolaridade_paciente == '' || escolaridade_paciente == undefined || escolaridade_paciente == null)
+    else if (quais_duvidas_sobre_insercao_diu_paciente == '' || quais_duvidas_sobre_insercao_diu_paciente == undefined || quais_duvidas_sobre_insercao_diu_paciente == null)
     {
         return false;
     }
-    else if (equipereferencia_paciente == '' || equipereferencia_paciente == undefined || equipereferencia_paciente == null)
+    else if(termo_consentimento_enviado == false)
     {
         return false;
-    }
-    else if (centrodesaude_paciente == '' || centrodesaude_paciente == undefined || centrodesaude_paciente == null)
-    {
-        return false;
-    }
-    else if ((/^\d+$/.test(rendamensal_paciente) == false))
-    {
-        return false; 
     }
     else
     {
@@ -302,8 +269,14 @@ const checkAllFieldsAreFine = () => {
 
 
 const handleSend = () => {
-        
-        if(checkAllFieldsAreFine())
+        if(info['cpf'] == '')
+        {
+            // Tem que cadastrar o paciente primeiro
+            // Sobe Backdrop informando isso
+            setMustRegisterPersonalDataFirst(true);
+            // Botão de retornar que irá baixar o popup e voltar para tela de cadastro
+        }
+        else if(checkAllFieldsAreFine())
         {
  
           updatedInfo['gestacoesAnteriores'] = gestacoes_anteriores_paciente;
@@ -363,7 +336,9 @@ const handleSend = () => {
                     <MenuItem value={'1'}>1</MenuItem>
                     <MenuItem value={'2'}>2</MenuItem>
                     <MenuItem value={'3'}>3</MenuItem>
-                    <MenuItem value={'Mais'}>mais que 3</MenuItem>
+                    <MenuItem value={'4'}>4</MenuItem>
+                    <MenuItem value={'5'}>5</MenuItem>
+                    <MenuItem value={'Mais'}>mais que 5</MenuItem>
                     </Select>
                 </Grid>
 
@@ -384,7 +359,9 @@ const handleSend = () => {
                     <MenuItem value={'1'}>1</MenuItem>
                     <MenuItem value={'2'}>2</MenuItem>
                     <MenuItem value={'3'}>3</MenuItem>
-                    <MenuItem value={'Mais'}>mais que 3</MenuItem>
+                    <MenuItem value={'4'}>4</MenuItem>
+                    <MenuItem value={'5'}>5</MenuItem>
+                    <MenuItem value={'Mais'}>mais que 5</MenuItem>
                     </Select>
                 </Grid>
 
@@ -404,7 +381,9 @@ const handleSend = () => {
                     <MenuItem value={'1'}>1</MenuItem>
                     <MenuItem value={'2'}>2</MenuItem>
                     <MenuItem value={'3'}>3</MenuItem>
-                    <MenuItem value={'Mais'}>mais que 3</MenuItem>
+                    <MenuItem value={'4'}>4</MenuItem>
+                    <MenuItem value={'5'}>5</MenuItem>
+                    <MenuItem value={'Mais'}>mais que 5</MenuItem>
                     </Select>
                 </Grid>
 
@@ -423,7 +402,9 @@ const handleSend = () => {
                     <MenuItem value={'1'}>1</MenuItem>
                     <MenuItem value={'2'}>2</MenuItem>
                     <MenuItem value={'3'}>3</MenuItem>
-                    <MenuItem value={'Mais'}>mais que 3</MenuItem>
+                    <MenuItem value={'4'}>4</MenuItem>
+                    <MenuItem value={'5'}>5</MenuItem>
+                    <MenuItem value={'Mais'}>mais que 5</MenuItem>
                     </Select>
                 </Grid>
 
@@ -825,7 +806,17 @@ const handleSend = () => {
             <Button variant='contained' sx={{bgcolor: '#265D9B'}} size='large' onClick={() => {setBackdropShow(false)}}>Ok</Button>
         </Paper>;
       </Backdrop>
-    </Box>
+
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={mustRegisterPersonalDataFirst}
+        
+      >
+        <Paper elevation={3}  sx={{display: 'flex', bgcolor: 'white', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '40%', width: '40%'}}>
+            <Typography variant='h5' fontWeight={'bold'} sx={{margin:'20px'}}>É necessário cadastrar os dados pessoais primeiro!</Typography>
+            <Button variant='contained' sx={{bgcolor: '#265D9B'}} size='large' onClick={() => {setMustRegisterPersonalDataFirst(false); goBackFirstTab('1')}}>Ok</Button>
+        </Paper>;
+      </Backdrop>
     </Box>
   );
 };

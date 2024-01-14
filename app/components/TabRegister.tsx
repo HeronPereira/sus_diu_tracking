@@ -118,7 +118,7 @@ export default function TabRegister() {
           </TabList>
         </Box>
         <TabPanel value="1"><PersonalDataForm info={myDictionary} setInfo={handleUpdateDictionary}/> </TabPanel>
-        <TabPanel value="2"> <HistoricalDataForm currentTab={value} setCurrentTab={setValue}  info={myDictionary} setInfo={handleUpdateDictionary}/></TabPanel>
+        <TabPanel value="2"> <HistoricalDataForm goBackFirstTab={setValue}  info={myDictionary} setInfo={handleUpdateDictionary}/></TabPanel>
         <TabPanel value="3"><PhysicalExamForm currentTab={value} setCurrentTab={setValue}  info={myDictionary} setInfo={handleUpdateDictionary}/> </TabPanel>
         <TabPanel value="4"><DiuInsertionForm currentTab={value} setCurrentTab={setValue}  info={myDictionary} setInfo={handleUpdateDictionary}/> </TabPanel>
         <TabPanel value="5"><PostDiuInsertionForm  currentTab={value} setCurrentTab={setValue}  info={myDictionary} setInfo={handleUpdateDictionary}/> </TabPanel>
