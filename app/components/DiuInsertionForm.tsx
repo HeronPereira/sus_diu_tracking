@@ -10,30 +10,32 @@ import { bool, number } from 'yup';
 
 import CloseIcon from '@mui/icons-material/Close';
 import { getCentroSaudeReferencia } from '../utils/utils';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 
 
 function DiuInsertionForm ({currentTab, setCurrentTab, info, setInfo}:{currentTab: string, setCurrentTab: (tab: string) => void, info: any, setInfo: (inf: any) => void}) {
 
+  const [data_insercao_paciente, setDataInsercaoPaciente] = useState(info.dataInsercao);
+  const [motivo_diu_nao_inserido_paciente, setMotivoDiuNaoInseridoPaciente] = useState(info.seDiuNaoInseridoPorque);
+  const [antissepsia_realizada_com_paciente, setAntissepsiaRealizadaComPaciente] = useState(info.antissepsiaRealizadaCom);
+  const [histerometria_paciente, setHisterometriaPaciente] = useState(info.histerometria);
+  const [tamanho_fio_paciente, setTamanhoFioPaciente] = useState(info.tamanhoFio);
+  const [modelo_diu_paciente, setModeloDiuPaciente] = useState(info.modeloDiu);
+  const [lote_diu_paciente, setLoteDiuPaciente] = useState(info.loteDiu);
+  const [intercorrencias_diu_paciente, setIntercorrenciasDiuPaciente] = useState(info.intercorrenciasDiu);
+  const [nivel_dor_paciente, setNivelDorPaciente] = useState(info.nivelDor);
+  const [profissional_inseriu_nome_paciente, setProfissionalInseriuNomePaciente] = useState(info.profissionalInseriuNome);
+  const [profissional_inseriu_crm_coren_paciente, setProfissionalInseriuCrmCorenPaciente] = useState(info.profissionalInseriuCRMCoren);
+  const [centro_saude_insercao_paciente, setCentroSaudeInsercaoPaciente] = useState(info.centroSaudeInsercao);
 
-  const [motivo_diu_nao_inserido_paciente, setMotivoDiuNaoInseridoPaciente] = React.useState(info.seDiuNaoInseridoPorque);
-  const [antissepsia_realizada_com_paciente, setAntissepsiaRealizadaComPaciente] = React.useState(info.antissepsiaRealizadaCom);
-  const [histerometria_paciente, setHisterometriaPaciente] = React.useState(info.histerometria);
-  const [tamanho_fio_paciente, setTamanhoFioPaciente] = React.useState(info.tamanhoFio);
-  const [modelo_diu_paciente, setModeloDiuPaciente] = React.useState(info.modeloDiu);
-  const [lote_diu_paciente, setLoteDiuPaciente] = React.useState(info.loteDiu);
-  const [intercorrencias_diu_paciente, setIntercorrenciasDiuPaciente] = React.useState(info.intercorrenciasDiu);
-  const [nivel_dor_paciente, setNivelDorPaciente] = React.useState(info.nivelDor);
-  const [profissional_inseriu_nome_paciente, setProfissionalInseriuNomePaciente] = React.useState(info.profissionalInseriuNome);
-  const [profissional_inseriu_crm_coren_paciente, setProfissionalInseriuCrmCorenPaciente] = React.useState(info.profissionalInseriuCRMCoren);
-  const [centro_saude_insercao_paciente, setCentroSaudeInsercaoPaciente] = React.useState(info.centroSaudeInsercao);
-
-  const [profissional_auxiliar_nome_paciente, setProfissionalAuxiliarNomePaciente] = React.useState(info.profissionalAuxiliarNome);
-  const [profissional_auxiliar_crm_coren_paciente, setProfissionalAuxiliarCrmCorenPaciente] = React.useState(info.profissionalAuxiliarCRMCoren);
+  const [profissional_auxiliar_nome_paciente, setProfissionalAuxiliarNomePaciente] = useState(info.profissionalAuxiliarNome);
+  const [profissional_auxiliar_crm_coren_paciente, setProfissionalAuxiliarCrmCorenPaciente] = useState(info.profissionalAuxiliarCRMCoren);
 
 
-  const [diu_foi_inserido, set_diu_foi_inserido] = React.useState(info.diuInserido);
-  const [disable_motivo_diu_nao_inserido, set_disable_motivo_diu_nao_inserido] = React.useState(false);
+  const [diu_foi_inserido, set_diu_foi_inserido] = useState(info.diuInserido);
+  const [disable_motivo_diu_nao_inserido, set_disable_motivo_diu_nao_inserido] = useState(false);
 
   const handleDiuFoiInserido = (event: React.ChangeEvent<HTMLInputElement>) => {
     set_diu_foi_inserido((event.target as HTMLInputElement).value);
@@ -50,15 +52,15 @@ function DiuInsertionForm ({currentTab, setCurrentTab, info, setInfo}:{currentTa
   };
 
 
-  const [fez_uso_previo_aine, set_fez_uso_previo_aine] = React.useState(info.usoPrevioAINE);
+  const [fez_uso_previo_aine, set_fez_uso_previo_aine] = useState(info.usoPrevioAINE);
 
   const handleFezUsoPrevioAine = (event: React.ChangeEvent<HTMLInputElement>) => {
     set_fez_uso_previo_aine((event.target as HTMLInputElement).value);
   };
 
 
-  const [uso_de_segundo_profissional, set_uso_de_segundo_profissional] = React.useState(info.auxilioSegundoProfissional);
-  const [disable_segundo_profissional, set_disable_segundo_profissional] = React.useState(false);
+  const [uso_de_segundo_profissional, set_uso_de_segundo_profissional] = useState(info.auxilioSegundoProfissional);
+  const [disable_segundo_profissional, set_disable_segundo_profissional] = useState(false);
   const handleUsoDeSegundoProfissional = (event: React.ChangeEvent<HTMLInputElement>) => {
     set_uso_de_segundo_profissional((event.target as HTMLInputElement).value);
 
@@ -74,13 +76,14 @@ function DiuInsertionForm ({currentTab, setCurrentTab, info, setInfo}:{currentTa
   };
 
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const updateInfofromForm = () => {
     // Use the spread operator to create a copy of the current dictionary
     const updatedInfo = { ...info };
 
     // Update or add a new key-value pair
+    updatedInfo.dataInsercao= data_insercao_paciente;
     updatedInfo.diuInserido= diu_foi_inserido;
     updatedInfo.seDiuNaoInseridoPorque= motivo_diu_nao_inserido_paciente;
     updatedInfo.usoPrevioAINE= fez_uso_previo_aine;
@@ -109,6 +112,20 @@ function DiuInsertionForm ({currentTab, setCurrentTab, info, setInfo}:{currentTa
     <Box sx={{ display: 'flex', height: '100%',  flexDirection: 'column', p: 2 }}>
 
             <Grid container spacing={2} padding={2}>
+
+            <Grid item xs={12} sm={4}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker onChange={
+                            (event)=>{
+
+                            setDataInsercaoPaciente(event)
+                        
+                        }
+                            } value={data_insercao_paciente}
+                            
+                            format="YYYY-MM-DD" label="Data de acompanhamento"/>
+                    </LocalizationProvider>
+                </Grid>
                 
             <Grid item xs={12} sm={2}>
                         <Typography>O DIU foi inserido?</Typography>
@@ -389,10 +406,11 @@ function DiuInsertionForm ({currentTab, setCurrentTab, info, setInfo}:{currentTa
             
     <Grid item xs={12} sm={12}>
         <Button type="submit" variant='contained' sx={{bgcolor: '#265D9B'}} onClick={() => {
-            setOpen(true);
+            // setOpen(true);
             updateInfofromForm();
+            setCurrentTab('4');
             }}>
-            Gravar
+            Próximo
         </Button>
 
         <Collapse in={open}>

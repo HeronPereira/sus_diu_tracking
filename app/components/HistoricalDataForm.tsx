@@ -364,49 +364,31 @@ function HistoricalDataForm ({currentTab, setCurrentTab, info, setInfo}:{current
                     </LocalizationProvider>
                 </Grid>
             
+                
+                <Grid item xs={12} sm={3}>
+                        <TextField
+                            label="Quantidade de dias que fica menstruada"
+                            variant="outlined"
+                            margin="normal"
+                            name="nome"
+                            value={quantidade_dias_menstruada_paciente}
+                            onChange={(event)=>{const onlyContainsNumbers = /^\d+$/.test(event.target.value); if((onlyContainsNumbers || event.target.value === '') && event.target.value.length <= 3){setQuantidadeDiasMenstruadaPaciente(event.target.value)}}}
+                            fullWidth
+                            />
+                </Grid>
 
                 <Grid item xs={12} sm={3}>
-               
-                        <InputLabel id="demo-simple-select-label">Quantidade de dias que fica menstruada</InputLabel>
-                        <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={quantidade_dias_menstruada_paciente}
-                        label="Dias Menstruada"
-                        onChange={(event)=>{setQuantidadeDiasMenstruadaPaciente(event.target.value)}}
-                        autoWidth
-                        >
-                    <MenuItem value={'0'}>0</MenuItem>
-                    <MenuItem value={'1'}>1</MenuItem>
-                    <MenuItem value={'2'}>2</MenuItem>
-                    <MenuItem value={'3'}>3</MenuItem>
-                    <MenuItem value={'4'}>4</MenuItem>
-                    <MenuItem value={'5'}>5</MenuItem>
-                    <MenuItem value={'6'}>6</MenuItem>      
-                    <MenuItem value={'7'}>7</MenuItem>
-                    <MenuItem value={'Mais'}>mais que 7</MenuItem>
-                    </Select>
-             
+                        <TextField
+                            label="Intervalo em dias entre ciclos menstruais"
+                            variant="outlined"
+                            margin="normal"
+                            name="nome"
+                            value={intervalo_entre_ciclos_menstruais_paciente}
+                            onChange={(event)=>{const onlyContainsNumbers = /^\d+$/.test(event.target.value); if((onlyContainsNumbers || event.target.value === '') && event.target.value.length <= 3){setIntervaloEntreCiclosMenstruaisPaciente(event.target.value)}}}
+                            fullWidth
+                            />
                 </Grid>
                 
-            <Grid item xs={12} sm={3}>
-               
-               <InputLabel id="demo-simple-select-label">Intervalo em dias entre ciclos menstruais</InputLabel>
-               <Select
-               labelId="demo-simple-select-label"
-               id="demo-simple-select"
-               value={intervalo_entre_ciclos_menstruais_paciente}
-               label="Intervalo entre ciclos"
-               onChange={(event)=>{setIntervaloEntreCiclosMenstruaisPaciente(event.target.value)}}
-               autoWidth
-               >
-              <MenuItem value={'0'}>0</MenuItem>
-              <MenuItem value={'menos de 21'}>menos de 21</MenuItem>
-              <MenuItem value={'menos de 35'}>menos de 35</MenuItem>
-              <MenuItem value={'Mais'}>mais que 35</MenuItem>
-              </Select>
-    
-            </Grid>
 
                 <Grid item xs={12} sm={3}>
                         <InputLabel id="demo-simple-select-label">Volume menstrual</InputLabel>
@@ -736,10 +718,11 @@ function HistoricalDataForm ({currentTab, setCurrentTab, info, setInfo}:{current
   
             <Grid item xs={12} sm={12}>
         <Button type="submit" variant='contained' sx={{bgcolor: '#265D9B'}} onClick={() => {
-            setOpen(true);
+            /* setOpen(true); */
             updateInfofromForm();
+            setCurrentTab('3');
             }}>
-            Gravar
+            Próximo
         </Button>
 
         <Collapse in={open}>

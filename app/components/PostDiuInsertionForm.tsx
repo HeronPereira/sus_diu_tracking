@@ -4,7 +4,6 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button'
 import MenuItem from '@mui/material/MenuItem';
 
-import InputAdornment from '@mui/material/InputAdornment';
 import { Box, Grid, InputLabel, Rating, Select, Slider, Stack, Checkbox, Typography, FormControl, SelectChangeEvent, Chip, RadioGroup, FormControlLabel, Radio, Collapse, Alert, IconButton } from '@mui/material';
 import { bool, number } from 'yup';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
@@ -18,7 +17,7 @@ function PostDiuInsertionForm ({currentTab, setCurrentTab, info, setInfo}:{curre
 
   const [data_acompanhamento_paciente, setDataAcompanhamentoPaciente] = useState(info.dataAcompanhamento);
   const [dias_sangramento_pos_insercao_paciente, setDiasSangramentoPosInsercaoPaciente] = useState(info.diasSangramentoPosInsercao);
-  const [dor_apos_insercao_paciente, setDorAposInsercaoPaciente] = useState(info.nivelDorPosInsercao);
+
  
 
   const [data_ultima_menstruacao_pos_insercao_paciente, setDataUltimaMenstruacaoPosInsercaoPaciente] = useState(info.dataUltimaMenstruacaoPosInsercao);
@@ -99,7 +98,6 @@ function PostDiuInsertionForm ({currentTab, setCurrentTab, info, setInfo}:{curre
     // Update or add a new key-value pair
     updatedInfo.dataAcompanhamento= data_acompanhamento_paciente.format('YYYY/MM/DD');
     updatedInfo.diasSangramentoPosInsercao= dias_sangramento_pos_insercao_paciente;
-    updatedInfo.nivelDorPosInsercao= dor_apos_insercao_paciente;
     updatedInfo.nivelSatisfacaoInsercao= nivel_de_satisfacao_paciente;
     updatedInfo.dataUltimaMenstruacaoPosInsercao= data_ultima_menstruacao_pos_insercao_paciente.format('YYYY/MM/DD');
     updatedInfo.diasMenstruadaPosInsercao= dias_mestruada_pos_insercao_paciente;
@@ -124,7 +122,7 @@ function PostDiuInsertionForm ({currentTab, setCurrentTab, info, setInfo}:{curre
             <Grid container spacing={2} padding={2}>
                 
            
-            <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={4}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker onChange={
                             (event)=>{
@@ -151,14 +149,7 @@ function PostDiuInsertionForm ({currentTab, setCurrentTab, info, setInfo}:{curre
                             />
                 </Grid>
 
-                <Grid item xs={12} sm={4}>
-                        <Typography>Nível de dor pós inserção</Typography>
-                        <Stack direction={'row'} spacing={2} alignItems={'center'}>
-                            <Typography>0</Typography>
-                            <Slider aria-label='always-visible' min={0} max={10} valueLabelDisplay='on' value={parseInt(dor_apos_insercao_paciente)} onChange={(event)=>{if(event.target){ setDorAposInsercaoPaciente((event.target as HTMLInputElement).value)}}}/>
-                            <Typography>10</Typography>
-                        </Stack>
-                </Grid>
+           
 
                 <Grid item xs={12} sm={4}>
                         <Typography>Nível de satisfação com a inserção</Typography>
@@ -196,47 +187,29 @@ function PostDiuInsertionForm ({currentTab, setCurrentTab, info, setInfo}:{curre
                 </Grid>
                 
                 <Grid item xs={12} sm={3}>
-               
-                        <InputLabel id="demo-simple-select-label">Quantidade de dias que fica menstruada pós inserção</InputLabel>
-                        <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={dias_mestruada_pos_insercao_paciente}
-                        label="Dias Menstruada"
-                        onChange={(event)=>{setDiasMestruadaPosInsercaoPaciente(event.target.value)}}
-                        autoWidth
-                        >
-                    <MenuItem value={'0'}>0</MenuItem>
-                    <MenuItem value={'1'}>1</MenuItem>
-                    <MenuItem value={'2'}>2</MenuItem>
-                    <MenuItem value={'3'}>3</MenuItem>
-                    <MenuItem value={'4'}>4</MenuItem>
-                    <MenuItem value={'5'}>5</MenuItem>
-                    <MenuItem value={'6'}>6</MenuItem>      
-                    <MenuItem value={'7'}>7</MenuItem>
-                    <MenuItem value={'Mais'}>mais que 7</MenuItem>
-                    </Select>
-             
+                        <TextField
+                            label="Quantidade de dias que fica menstruada pós inserção"
+                            variant="outlined"
+                            margin="normal"
+                            name="nome"
+                            value={dias_mestruada_pos_insercao_paciente}
+                            onChange={(event)=>{const onlyContainsNumbers = /^\d+$/.test(event.target.value); if((onlyContainsNumbers || event.target.value === '') && event.target.value.length <= 3){setDiasMestruadaPosInsercaoPaciente(event.target.value)}}}
+                            fullWidth
+                            />
                 </Grid>
 
                 <Grid item xs={12} sm={3}>
-               
-               <InputLabel id="demo-simple-select-label">Intervalo em dias entre ciclos menstruais pós inserção</InputLabel>
-               <Select
-               labelId="demo-simple-select-label"
-               id="demo-simple-select"
-               value={intervalo_ciclos_mestruais_pos_insercao_paciente}
-               label="Intervalo entre ciclos"
-               onChange={(event)=>{setIntervaloCiclosMestruaisPosInsercaoPaciente(event.target.value)}}
-               autoWidth
-               >
-              <MenuItem value={'0'}>0</MenuItem>
-              <MenuItem value={'menos de 21'}>menos de 21</MenuItem>
-              <MenuItem value={'menos de 35'}>menos de 35</MenuItem>
-              <MenuItem value={'Mais'}>mais que 35</MenuItem>
-              </Select>
-    
-            </Grid>
+                        <TextField
+                            label="Intervalo em dias entre ciclos menstruais pós inserção"
+                            variant="outlined"
+                            margin="normal"
+                            name="nome"
+                            value={intervalo_ciclos_mestruais_pos_insercao_paciente}
+                            onChange={(event)=>{const onlyContainsNumbers = /^\d+$/.test(event.target.value); if((onlyContainsNumbers || event.target.value === '') && event.target.value.length <= 3){setIntervaloCiclosMestruaisPosInsercaoPaciente(event.target.value)}}}
+                            fullWidth
+                            />
+                </Grid>
+
 
             <Grid item xs={12} sm={3}>
                         <InputLabel id="demo-simple-select-label">Volume menstrual pós inserção</InputLabel>

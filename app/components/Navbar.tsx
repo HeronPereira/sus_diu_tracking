@@ -18,6 +18,7 @@ import { Paper } from '@mui/material';
 import { blue } from '@mui/material/colors';
 import Link from 'next/link';
 import LogoutIcon from '@mui/icons-material/Logout';
+import LineAxisIcon from '@mui/icons-material/LineAxis';
 
 const drawerWidth = 240;
 
@@ -42,7 +43,17 @@ export default function PermanentDrawerLeft() {
           
           <Divider />
           <List>
-            
+              <Link href={'/Dashboard'}>
+                <ListItem key={'Dashboard'} disablePadding>
+                  <ListItemButton sx={{WebkitTextFillColor: 'white', fontWeight: 'bold'}}>
+                    <ListItemIcon sx={{color: 'white'}}>
+                      <LineAxisIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={'Dashboard'} />
+                  </ListItemButton>
+                </ListItem>
+              </Link>
+
               <Link href={'/cadastroPaciente'}>
                 <ListItem key={'Cadastro'} disablePadding>
                   <ListItemButton sx={{WebkitTextFillColor: 'white', fontWeight: 'bold'}}>

@@ -182,8 +182,8 @@ const handleTesteDeGravidezAlterado = (event: React.ChangeEvent<HTMLInputElement
                               value={teste_de_gravidez_alterado}
                               onChange={handleTesteDeGravidezAlterado}
                               >
-                                <FormControlLabel disabled={disable_teste_gravidez_reagente} value="no" control={<Radio />} label="Não" />
-                                <FormControlLabel disabled={disable_teste_gravidez_reagente} value="yes" control={<Radio />} label="Sim" />
+                                <FormControlLabel disabled={disable_teste_gravidez_reagente} value="Nao Reagente" control={<Radio />} label="Não Reagente" />
+                                <FormControlLabel disabled={disable_teste_gravidez_reagente} value="Reagente" control={<Radio />} label="Reagente" />
                             </RadioGroup>
                         </Stack>
                 </Grid>
@@ -269,10 +269,11 @@ const handleTesteDeGravidezAlterado = (event: React.ChangeEvent<HTMLInputElement
             
     <Grid item xs={12} sm={12}>
         <Button type="submit" variant='contained' sx={{bgcolor: '#265D9B'}} onClick={() => {
-            setOpen(true);
+           /*  setOpen(true); */
             updateInfofromForm();
+            setCurrentTab('4');
             }}>
-            Gravar
+            Próximo
         </Button>
 
         <Collapse in={open}>

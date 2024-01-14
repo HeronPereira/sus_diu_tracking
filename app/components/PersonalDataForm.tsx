@@ -1,83 +1,178 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button'
 import MenuItem from '@mui/material/MenuItem';
 
 import InputAdornment from '@mui/material/InputAdornment';
-import { Alert, Box, Collapse, Grid, IconButton, InputLabel, Select } from '@mui/material';
+import { Alert, Backdrop, Box, Collapse, Grid, IconButton, InputLabel, Paper, Select, Typography } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 import CloseIcon from '@mui/icons-material/Close';
 import dayjs, { Dayjs } from 'dayjs';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 
-function PersonalDataForm ({currentTab, setCurrentTab, info, setInfo}:{currentTab: string, setCurrentTab: (tab: string) => void, info: any, setInfo: (inf: any) => void}) {
-
-const [nome_paciente, setNomePaciente] = useState(info.nome);
-const [cpf_paciente, setCPFPaciente] = useState(info.cpf);
-const [cns_paciente, setCNSPaciente] = useState(info.cns);
-const [nascimento_paciente, setNascimentoPaciente] = useState(info.nascimento);
-
-const [cep_paciente, setCEPPaciente] = useState(info.cep);
-const [endereco_paciente, setEnderecoPaciente] = useState(info.endereco);
-const [numero_paciente, setNumeroPaciente] = useState(info.numero);
-const [complemento_paciente, setComplementoPaciente] = useState(info.complemento);
-
-const [bairro_paciente, setBairroPaciente] = useState(info.bairro);
-const [cidade_paciente, setCidadePaciente] = useState(info.cidade);
+function PersonalDataForm ({ info, setInfo}:{info: any, setInfo: (inf: any) => void}) {
 
 
-const [telefone_paciente, setTelefonePaciente] = useState(info.telefone);
-const [telefoneFamiliar_paciente, setTelefoneFamiliarPaciente] = useState(info.telefoneFamiliar);
-const [email_paciente, setEmailPaciente] = useState(info.email);
+// Use the spread operator to create a copy of the current dictionary
+const updatedInfo = { ...info };
 
-const [racacor_paciente, setRacaCorPaciente] = useState(info.cor);
-const [estadocivil_paciente, setEstadoCivilPaciente] = useState(info.estadoCivil);
-const [escolaridade_paciente, setEscolaridadePaciente] = useState(info.escolaridade);
+const [nome_paciente, setNomePaciente] = useState(info['nome']);
+const [cpf_paciente, setCPFPaciente] = useState(info['cpf']);
+const [cns_paciente, setCNSPaciente] = useState(info['cns']);
+const [nascimento_paciente, setNascimentoPaciente] = useState(info['nascimento']);
 
-const [rendamensal_paciente, setRendaMensalPaciente] = useState(info.renda);
-const [profissao_paciente, setProfissaoPaciente] = useState(info.profissao);
-const [equipereferencia_paciente, setEquipeReferenciaPaciente] = useState(info.equipeReferencia);
+const [cep_paciente, setCEPPaciente] = useState(info['cep']);
+const [endereco_paciente, setEnderecoPaciente] = useState(info['endereco']);
+const [numero_paciente, setNumeroPaciente] = useState(info['numero']);
+const [complemento_paciente, setComplementoPaciente] = useState(info['complemento']);
 
-const [centrodesaude_paciente, setCentroDeSaudePaciente] = useState(info.centroSaudeReferencia);
-
-
-
-const [open, setOpen] = React.useState(false);
-
-const updateInfofromForm = () => {
-     // Use the spread operator to create a copy of the current dictionary
-     const updatedInfo = { ...info };
-
-     // Update or add a new key-value pair
-     updatedInfo.nome = nome_paciente;
-     updatedInfo.cpf = cpf_paciente;
-     updatedInfo.cns = cns_paciente;
-     updatedInfo.nascimento = nascimento_paciente;
-     updatedInfo.cep = cep_paciente;
-     updatedInfo.endereco = endereco_paciente;
-     updatedInfo.numero = numero_paciente;
-     updatedInfo.complemento = complemento_paciente;
-     updatedInfo.bairro = bairro_paciente;
-     updatedInfo.cidade = cidade_paciente;
-     updatedInfo.telefone = telefone_paciente;
-     updatedInfo.telefoneFamiliar = telefoneFamiliar_paciente;
-     updatedInfo.email = email_paciente;
-     updatedInfo.cor = racacor_paciente;
-     updatedInfo.estadoCivil = estadocivil_paciente;
-     updatedInfo.escolaridade = escolaridade_paciente;
-     updatedInfo.renda = rendamensal_paciente;
-     updatedInfo.profissao = profissao_paciente;
-     updatedInfo.equipeReferencia = equipereferencia_paciente;
-     updatedInfo.centroSaudeReferencia = centrodesaude_paciente;
+const [bairro_paciente, setBairroPaciente] = useState(info['bairro']);
+const [cidade_paciente, setCidadePaciente] = useState(info['cidade']);
 
 
-     setInfo(updatedInfo);
+const [telefone_paciente, setTelefonePaciente] = useState(info['telefone']);
+const [telefoneFamiliar_paciente, setTelefoneFamiliarPaciente] = useState(info['telefoneFamiliar']);
 
-     
+
+const [racacor_paciente, setRacaCorPaciente] = useState(info['cor']);
+const [estadocivil_paciente, setEstadoCivilPaciente] = useState(info['estadoCivil']);
+const [escolaridade_paciente, setEscolaridadePaciente] = useState(info['escolaridade']);
+
+const [rendamensal_paciente, setRendaMensalPaciente] = useState(info['renda']);
+const [profissao_paciente, setProfissaoPaciente] = useState(info['profissao']);
+const [equipereferencia_paciente, setEquipeReferenciaPaciente] = useState(info['equipeReferencia']);
+
+const [centrodesaude_paciente, setCentroDeSaudePaciente] = useState(info['centroSaudeReferencia']);
+
+const isAnUpdateForm = (info['cpf'] == '') ? false : true;
+
+
+const [backdrop_show, setBackdropShow] = useState(false);
+
+
+const checkAllFieldsAreFine = () => {
+    if (nome_paciente == '' || nome_paciente == undefined || nome_paciente == null)
+    {
+        return false;
+    }
+    else if ((/^\d+$/.test(cpf_paciente) == false) || (cpf_paciente.length != 11))
+    {
+        return false; 
+    }
+    else if ((/^\d+$/.test(cns_paciente) == false) || (cns_paciente.length != 15))
+    {
+        return false; 
+    }
+    else if ((/^\d+$/.test(cep_paciente) == false) || (cep_paciente.length != 8))
+    {
+        return false; 
+    }
+    else if (endereco_paciente == '' || endereco_paciente == undefined || endereco_paciente == null)
+    {
+        return false;
+    }
+    else if ((/^\d+$/.test(numero_paciente) == false))
+    {
+        return false; 
+    }
+    else if (complemento_paciente == '' || complemento_paciente == undefined || complemento_paciente == null)
+    {
+        return false;
+    }
+    else if (bairro_paciente == '' || bairro_paciente == undefined || bairro_paciente == null)
+    {
+        return false;
+    }
+    else if (cidade_paciente == '' || cidade_paciente == undefined || cidade_paciente == null)
+    {
+        return false;
+    }
+    else if ((/^\d+$/.test(telefone_paciente) == false))
+    {
+        return false; 
+    }
+    else if ((/^\d+$/.test(telefoneFamiliar_paciente) == false))
+    {
+        return false; 
+    }
+    else if (racacor_paciente == '' || racacor_paciente == undefined || racacor_paciente == null)
+    {
+        return false;
+    }
+    else if (profissao_paciente == '' || profissao_paciente == undefined || profissao_paciente == null)
+    {
+        return false;
+    }
+    else if (estadocivil_paciente == '' || estadocivil_paciente == undefined || estadocivil_paciente == null)
+    {
+        return false;
+    }
+    else if (escolaridade_paciente == '' || escolaridade_paciente == undefined || escolaridade_paciente == null)
+    {
+        return false;
+    }
+    else if (equipereferencia_paciente == '' || equipereferencia_paciente == undefined || equipereferencia_paciente == null)
+    {
+        return false;
+    }
+    else if (centrodesaude_paciente == '' || centrodesaude_paciente == undefined || centrodesaude_paciente == null)
+    {
+        return false;
+    }
+    else if ((/^\d+$/.test(rendamensal_paciente) == false))
+    {
+        return false; 
+    }
+    else
+    {
+        return true;
+    }
 }
+
+
+const handleSend = () => {
+        
+        if(checkAllFieldsAreFine())
+        {
+ 
+                // Update or add a new key-value pair
+                updatedInfo['nome'] = nome_paciente;
+                updatedInfo['cpf'] = cpf_paciente;
+                updatedInfo['cns'] = cns_paciente;
+                updatedInfo['nascimento'] = nascimento_paciente;
+                updatedInfo['cep'] = cep_paciente;
+                updatedInfo['endereco'] = endereco_paciente;
+                updatedInfo['numero'] = numero_paciente;
+                updatedInfo['complemento'] = complemento_paciente;
+                updatedInfo['bairro'] = bairro_paciente;
+                updatedInfo['cidade'] = cidade_paciente;
+                updatedInfo['telefone'] = telefone_paciente;
+                updatedInfo['telefoneFamiliar'] = telefoneFamiliar_paciente;
+                updatedInfo['cor'] = racacor_paciente;
+                updatedInfo['estadoCivil'] = estadocivil_paciente;
+                updatedInfo['escolaridade'] = escolaridade_paciente;
+                updatedInfo['renda'] = rendamensal_paciente;
+                updatedInfo['profissao'] = profissao_paciente;
+                updatedInfo['equipeReferencia'] = equipereferencia_paciente;
+                updatedInfo['centroSaudeReferencia'] = centrodesaude_paciente;
+
+                setInfo(updatedInfo);
+
+            
+        }
+        else
+        {
+            setBackdropShow(true);
+        }
+        
+
+        
+    }
 
   return (
     <Box sx={{ display: 'flex', height: '100%',  flexDirection: 'column', p: 2 }}>
@@ -252,18 +347,6 @@ const updateInfofromForm = () => {
                 />
             </Grid>
 
-            <Grid item xs={12} sm={4}>    
-                <TextField
-                    required={true}
-                    label="E-mail"
-                    variant="outlined"
-                    margin="normal"
-                    name="email"
-                    value={email_paciente}
-                    onChange={(event)=>{setEmailPaciente(event.target.value)}}
-                    fullWidth
-                />
-            </Grid>
             
             <Grid item xs={12} sm={2}>
             <InputLabel id="demo-simple-select-label">Raça/Cor (auto declarado)*</InputLabel>
@@ -448,38 +531,24 @@ const updateInfofromForm = () => {
                 
             
     <Grid item xs={12} sm={12}>
-        <Button variant='contained' sx={{bgcolor: '#265D9B'}} onClick={() => {
-            setOpen(true);
-            updateInfofromForm();
-            /* setCurrentTab('2'); */
-            }}>
-            Próximo
+        <Button variant='contained' sx={{bgcolor: '#265D9B'}} onClick={handleSend}>
+            Gravar
         </Button>
-
-        <Collapse in={open}>
-            <Alert
-            action={
-                <IconButton
-                aria-label="close"
-                color="inherit"
-                size="small"
-                onClick={() => {
-                    setOpen(false);
-                    
-                }}
-                >
-                <CloseIcon fontSize="inherit" />
-                </IconButton>
-            }
-            sx={{ mb: 2 }}
-            >
-            {JSON.stringify(info)}        
-            </Alert>    
-        </Collapse>
     </Grid>  
-  
+            
+    <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={backdrop_show}
+        
+      >
+        <Paper elevation={3}  sx={{display: 'flex', bgcolor: 'white', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '40%', width: '40%'}}>
+            <Typography variant='h5' fontWeight={'bold'} sx={{margin:'20px'}}>Preencha os campos corretamente!</Typography>
+            <Button variant='contained' sx={{bgcolor: '#265D9B'}} size='large' onClick={() => {setBackdropShow(false)}}>Ok</Button>
+        </Paper>;
+      </Backdrop>
     </Box>
   );
 };
 
 export default PersonalDataForm;
+ 

@@ -14,7 +14,6 @@ const schema = z.object({
     cidade: z.string().min(1),
     telefone: z.string().min(7).max(14),
     telefoneFamiliar: z.string().min(7).max(14),
-    email: z.string().email(),
     cor: z.string().min(5).max(8),
     estadoCivil: z.string().min(5).max(10),
     escolaridade: z.string().min(1),
