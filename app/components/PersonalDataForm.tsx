@@ -49,8 +49,6 @@ const [equipereferencia_paciente, setEquipeReferenciaPaciente] = useState(info['
 
 const [centrodesaude_paciente, setCentroDeSaudePaciente] = useState(info['centroSaudeReferencia']);
 
-const isAnUpdateForm = (info['cpf'] == '') ? false : true;
-
 
 const [backdrop_show, setBackdropShow] = useState(false);
 
@@ -169,8 +167,6 @@ const handleSend = () => {
         {
             setBackdropShow(true);
         }
-        
-
         
     }
 

@@ -5,7 +5,7 @@ import Button from '@mui/material/Button'
 import MenuItem from '@mui/material/MenuItem';
 
 import InputAdornment from '@mui/material/InputAdornment';
-import { Alert, Box, Checkbox, Chip, Collapse, FormControl, FormControlLabel, FormLabel, Grid, IconButton, InputLabel, Radio, RadioGroup, Select, SelectChangeEvent, Stack, Typography, styled } from '@mui/material';
+import { Alert, Backdrop, Box, Checkbox, Chip, Collapse, FormControl, FormControlLabel, FormLabel, Grid, IconButton, InputLabel, Paper, Radio, RadioGroup, Select, SelectChangeEvent, Stack, Typography, styled } from '@mui/material';
 import { bool, number, object } from 'yup';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -20,36 +20,39 @@ import { string } from 'zod';
 
 
   
-function HistoricalDataForm ({currentTab, setCurrentTab, info, setInfo}:{currentTab: string, setCurrentTab: (tab: string) => void, info: any, setInfo: (inf: any) => void}) {
+function HistoricalDataForm ({ info, setInfo}:{info: any, setInfo: (inf: any) => void}) {
 
-  const [gestacoes_anteriores_paciente, setGestacoesAnterioresPaciente] = useState(info.gestacoesAnteriores);
-  const [partos_normais_anteriores_paciente, setPartosNormaisAnterioresPaciente] = useState(info.partosNormaisAnteriores);
-  const [partos_cesarianas_anteriores_paciente, setPartosCesarianasAnterioresPaciente] = useState(info.partosCesarianasAnteriores);
-  const [abortos_anteriores_paciente, setAbortosAnterioresPaciente] = useState(info.abortosAnteriores);
-  const [data_ultima_gestacao_paciente, setDataUltimaGestacaoPaciente] = useState(info.dataUltimaGestacao);
-  const [data_ultima_menstruacao_paciente, setDataUltimaMenstruacaoPaciente] =useState(info.dataUltimaMenstruacao);
-  const [quantidade_dias_menstruada_paciente, setQuantidadeDiasMenstruadaPaciente] = useState(info.diasMenstruada);
-  const [intervalo_entre_ciclos_menstruais_paciente, setIntervaloEntreCiclosMenstruaisPaciente] = useState(info.intervaloEntreCiclosMenstruais);
-  const [volume_menstrual_paciente, setVolumeMenstrualPaciente] = useState(info.volumeMenstrual);
-  const [colicas_paciente, setColicasPaciente] = useState(info.colicas);
+  // Use the spread operator to create a copy of the current dictionary
+  const updatedInfo = { ...info };
+
+  const [gestacoes_anteriores_paciente, setGestacoesAnterioresPaciente] = useState(info['gestacoesAnteriores']);
+  const [partos_normais_anteriores_paciente, setPartosNormaisAnterioresPaciente] = useState(info['partosNormaisAnteriores']);
+  const [partos_cesarianas_anteriores_paciente, setPartosCesarianasAnterioresPaciente] = useState(info['partosCesarianasAnteriores']);
+  const [abortos_anteriores_paciente, setAbortosAnterioresPaciente] = useState(info['abortosAnteriores']);
+  const [data_ultima_gestacao_paciente, setDataUltimaGestacaoPaciente] = useState(info['dataUltimaGestacao']);
+  const [data_ultima_menstruacao_paciente, setDataUltimaMenstruacaoPaciente] =useState(info['dataUltimaMenstruacao']);
+  const [quantidade_dias_menstruada_paciente, setQuantidadeDiasMenstruadaPaciente] = useState(info['diasMenstruada']);
+  const [intervalo_entre_ciclos_menstruais_paciente, setIntervaloEntreCiclosMenstruaisPaciente] = useState(info['intervaloEntreCiclosMenstruais']);
+  const [volume_menstrual_paciente, setVolumeMenstrualPaciente] = useState(info['volumeMenstrual']);
+  const [colicas_paciente, setColicasPaciente] = useState(info['colicas']);
   
-  const [data_ultimo_preventivo_paciente, setDataUltimoPreventivoPaciente] = useState(info.dataUltimoPreventivo);
-  const [problemas_saude_paciente, setProblemasSaudePaciente] = useState(info.problemasSaude);
-  const [medicacoes_em_uso_paciente, setMedicacoesEmUsoPaciente] = useState(info.medicacaoEmUso);
-  const [alergia_cobre_medicamento_paciente, setAlergiaCobreMedicamentoPaciente] = useState(info.alergiaCobreMedicamento);
+  const [data_ultimo_preventivo_paciente, setDataUltimoPreventivoPaciente] = useState(info['dataUltimoPreventivo']);
+  const [problemas_saude_paciente, setProblemasSaudePaciente] = useState(info['problemasSaude']);
+  const [medicacoes_em_uso_paciente, setMedicacoesEmUsoPaciente] = useState(info['medicacaoEmUso']);
+  const [alergia_cobre_medicamento_paciente, setAlergiaCobreMedicamentoPaciente] = useState(info['alergiaCobreMedicamento']);
 
   
-  const [qual_ist_paciente, setQualIstPaciente] = useState(info.possuiQualIst);
+  const [qual_ist_paciente, setQualIstPaciente] = useState(info['possuiQualIst']);
 
   
-  const [qual_cirurgia_paciente, setQualCirurgiaPaciente] = useState(info.fezQualCirurgiaPelvicaUterina);
+  const [qual_cirurgia_paciente, setQualCirurgiaPaciente] = useState(info['fezQualCirurgiaPelvicaUterina']);
   
-  const [qual_exame_alteracao_de_utero_paciente, setQualExameAlteracaoDeUteroPaciente] = useState(info.fezQualExameAlteracaoUtero);
+  const [qual_exame_alteracao_de_utero_paciente, setQualExameAlteracaoDeUteroPaciente] = useState(info['fezQualExameAlteracaoUtero']);
 
-  const [exames_anteriores_paciente, setExamesAnterioresPaciente] = useState(info.examesAnteriores);
-  const [porque_inserir_diu_paciente, setPorqueInserirDiuPaciente] = useState(info.porqueInserirDIU);
+  const [exames_anteriores_paciente, setExamesAnterioresPaciente] = useState(info['examesAnteriores']);
+  const [porque_inserir_diu_paciente, setPorqueInserirDiuPaciente] = useState(info['porqueInserirDIU']);
 
-  const [quais_duvidas_sobre_insercao_diu_paciente, setQuaisDuvidasSobreInsercaoDiuPaciente] = useState(info.duvidasSobreInsercaoDIU);
+  const [quais_duvidas_sobre_insercao_diu_paciente, setQuaisDuvidasSobreInsercaoDiuPaciente] = useState(info['duvidasSobreInsercaoDIU']);
 
 
   
@@ -83,7 +86,7 @@ function HistoricalDataForm ({currentTab, setCurrentTab, info, setInfo}:{current
     'Outro',
   ];
 
-  const [metodos_anticonceptivos_anteriores, setMetodos_anticonceptivos_anteriores] = React.useState<string[]>([info.contraceptivosAnteriores]);
+  const [metodos_anticonceptivos_anteriores, setMetodos_anticonceptivos_anteriores] = React.useState<string[]>([info['contraceptivosAnteriores']]);
 
   const handle_metodos_anticonceptivos_anteriores = (event: SelectChangeEvent<typeof metodos_anticonceptivos_anteriores>) => {
     const {
@@ -95,7 +98,7 @@ function HistoricalDataForm ({currentTab, setCurrentTab, info, setInfo}:{current
     );
   };  
   
-  const [metodos_anticonceptivos_atuais, setMetodos_anticonceptivos_atuais] = React.useState<string[]>([info.contraceptivosAtuais]);
+  const [metodos_anticonceptivos_atuais, setMetodos_anticonceptivos_atuais] = React.useState<string[]>([info['contraceptivosAtuais']]);
 
   const handle_metodos_anticonceptivos_atuais = (event: SelectChangeEvent<typeof metodos_anticonceptivos_atuais>) => {
     const {
@@ -108,7 +111,7 @@ function HistoricalDataForm ({currentTab, setCurrentTab, info, setInfo}:{current
   };  
   
   
-  const [preventivoAlterado, setPreventivoAlterado] = React.useState(info.ultimoPreventivoAlterado);
+  const [preventivoAlterado, setPreventivoAlterado] = React.useState(info['ultimoPreventivoAlterado']);
 
   const [disable_data_preventivo, setDisableDataPreventivo] = useState(false);
 
@@ -202,7 +205,7 @@ function HistoricalDataForm ({currentTab, setCurrentTab, info, setInfo}:{current
 
   
 
-  const [termo_consentimento_enviado, setTermoConsentimentoEnviado] = React.useState(info.possuiTermoConsentimento);
+  const [termo_consentimento_enviado, setTermoConsentimentoEnviado] = React.useState(info['possuiTermoConsentimento']);
 
   const handleTermoConsentimentoEnviado = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTermoConsentimentoEnviado(event.target.checked);
@@ -213,42 +216,132 @@ function HistoricalDataForm ({currentTab, setCurrentTab, info, setInfo}:{current
   const [open, setOpen] = React.useState(false);
 
 
-  const updateInfofromForm = () => {
-    // Use the spread operator to create a copy of the current dictionary
-    const updatedInfo = { ...info };
-
-    // Update or add a new key-value pair
-
-    updatedInfo.gestacoesAnteriores = gestacoes_anteriores_paciente;
-    updatedInfo.partosNormaisAnteriores = partos_normais_anteriores_paciente;
-    updatedInfo.partosCesarianasAnteriores = partos_cesarianas_anteriores_paciente;
-    updatedInfo.abortosAnteriores = abortos_anteriores_paciente;
-    updatedInfo.dataUltimaGestacao = data_ultima_gestacao_paciente.format('YYYY/MM/DD');
-    updatedInfo.dataUltimaMenstruacao = data_ultima_menstruacao_paciente.format('YYYY/MM/DD');
-    updatedInfo.diasMenstruada = quantidade_dias_menstruada_paciente;
-    updatedInfo.intervaloEntreCiclosMenstruais = intervalo_entre_ciclos_menstruais_paciente;
-    updatedInfo.volumeMenstrual = volume_menstrual_paciente;
-    updatedInfo.colicas = colicas_paciente;
-    updatedInfo.contraceptivosAnteriores = metodos_anticonceptivos_anteriores.toString();
-    updatedInfo.contraceptivosAtuais = metodos_anticonceptivos_atuais.toString();
-    updatedInfo.ultimoPreventivoAlterado = preventivoAlterado;
-    updatedInfo.dataUltimoPreventivo = data_ultimo_preventivo_paciente.format('YYYY/MM/DD');
-    updatedInfo.possuiQualIst = qual_ist_paciente;
-    updatedInfo.fezQualCirurgiaPelvicaUterina = qual_cirurgia_paciente;
-    updatedInfo.problemasSaude = problemas_saude_paciente;
-    updatedInfo.medicacaoEmUso = medicacoes_em_uso_paciente;
-    updatedInfo.alergiaCobreMedicamento = alergia_cobre_medicamento_paciente
-    updatedInfo.fezQualExameAlteracaoUtero = qual_exame_alteracao_de_utero_paciente;
-    updatedInfo.examesAnteriores = exames_anteriores_paciente;
-    updatedInfo.porqueInserirDIU = porque_inserir_diu_paciente;
-    updatedInfo.duvidasSobreInsercaoDIU = quais_duvidas_sobre_insercao_diu_paciente;
-    updatedInfo.possuiTermoConsentimento = termo_consentimento_enviado;
 
 
-    setInfo(updatedInfo);
+const [backdrop_show, setBackdropShow] = useState(false);
 
-    
+
+const checkAllFieldsAreFine = () => {
+    if (nome_paciente == '' || nome_paciente == undefined || nome_paciente == null)
+    {
+        return false;
+    }
+    else if ((/^\d+$/.test(cpf_paciente) == false) || (cpf_paciente.length != 11))
+    {
+        return false; 
+    }
+    else if ((/^\d+$/.test(cns_paciente) == false) || (cns_paciente.length != 15))
+    {
+        return false; 
+    }
+    else if ((/^\d+$/.test(cep_paciente) == false) || (cep_paciente.length != 8))
+    {
+        return false; 
+    }
+    else if (endereco_paciente == '' || endereco_paciente == undefined || endereco_paciente == null)
+    {
+        return false;
+    }
+    else if ((/^\d+$/.test(numero_paciente) == false))
+    {
+        return false; 
+    }
+    else if (complemento_paciente == '' || complemento_paciente == undefined || complemento_paciente == null)
+    {
+        return false;
+    }
+    else if (bairro_paciente == '' || bairro_paciente == undefined || bairro_paciente == null)
+    {
+        return false;
+    }
+    else if (cidade_paciente == '' || cidade_paciente == undefined || cidade_paciente == null)
+    {
+        return false;
+    }
+    else if ((/^\d+$/.test(telefone_paciente) == false))
+    {
+        return false; 
+    }
+    else if ((/^\d+$/.test(telefoneFamiliar_paciente) == false))
+    {
+        return false; 
+    }
+    else if (racacor_paciente == '' || racacor_paciente == undefined || racacor_paciente == null)
+    {
+        return false;
+    }
+    else if (profissao_paciente == '' || profissao_paciente == undefined || profissao_paciente == null)
+    {
+        return false;
+    }
+    else if (estadocivil_paciente == '' || estadocivil_paciente == undefined || estadocivil_paciente == null)
+    {
+        return false;
+    }
+    else if (escolaridade_paciente == '' || escolaridade_paciente == undefined || escolaridade_paciente == null)
+    {
+        return false;
+    }
+    else if (equipereferencia_paciente == '' || equipereferencia_paciente == undefined || equipereferencia_paciente == null)
+    {
+        return false;
+    }
+    else if (centrodesaude_paciente == '' || centrodesaude_paciente == undefined || centrodesaude_paciente == null)
+    {
+        return false;
+    }
+    else if ((/^\d+$/.test(rendamensal_paciente) == false))
+    {
+        return false; 
+    }
+    else
+    {
+        return true;
+    }
 }
+
+
+const handleSend = () => {
+        
+        if(checkAllFieldsAreFine())
+        {
+ 
+          updatedInfo['gestacoesAnteriores'] = gestacoes_anteriores_paciente;
+          updatedInfo['partosNormaisAnteriores'] = partos_normais_anteriores_paciente;
+          updatedInfo['partosCesarianasAnteriores'] = partos_cesarianas_anteriores_paciente;
+          updatedInfo['abortosAnteriores'] = abortos_anteriores_paciente;
+          updatedInfo['dataUltimaGestacao'] = data_ultima_gestacao_paciente.format('YYYY/MM/DD');
+          updatedInfo['dataUltimaMenstruacao'] = data_ultima_menstruacao_paciente.format('YYYY/MM/DD');
+          updatedInfo['diasMenstruada'] = quantidade_dias_menstruada_paciente;
+          updatedInfo['intervaloEntreCiclosMenstruais'] = intervalo_entre_ciclos_menstruais_paciente;
+          updatedInfo['volumeMenstrual'] = volume_menstrual_paciente;
+          updatedInfo['colicas'] = colicas_paciente;
+          updatedInfo['contraceptivosAnteriores'] = metodos_anticonceptivos_anteriores.toString();
+          updatedInfo['contraceptivosAtuais'] = metodos_anticonceptivos_atuais.toString();
+          updatedInfo['ultimoPreventivoAlterado'] = preventivoAlterado;
+          updatedInfo['dataUltimoPreventivo'] = data_ultimo_preventivo_paciente.format('YYYY/MM/DD');
+          updatedInfo['possuiQualIst'] = qual_ist_paciente;
+          updatedInfo['fezQualCirurgiaPelvicaUterina'] = qual_cirurgia_paciente;
+          updatedInfo['problemasSaude'] = problemas_saude_paciente;
+          updatedInfo['medicacaoEmUso'] = medicacoes_em_uso_paciente;
+          updatedInfo['alergiaCobreMedicamento'] = alergia_cobre_medicamento_paciente
+          updatedInfo['fezQualExameAlteracaoUtero'] = qual_exame_alteracao_de_utero_paciente;
+          updatedInfo['examesAnteriores'] = exames_anteriores_paciente;
+          updatedInfo['porqueInserirDIU'] = porque_inserir_diu_paciente;
+          updatedInfo['duvidasSobreInsercaoDIU'] = quais_duvidas_sobre_insercao_diu_paciente;
+          updatedInfo['possuiTermoConsentimento'] = termo_consentimento_enviado;
+      
+      
+          setInfo(updatedInfo);
+
+            
+        }
+        else
+        {
+            setBackdropShow(true);
+        }
+        
+    }
 
 
   return (
@@ -717,34 +810,22 @@ function HistoricalDataForm ({currentTab, setCurrentTab, info, setInfo}:{current
             
   
             <Grid item xs={12} sm={12}>
-        <Button type="submit" variant='contained' sx={{bgcolor: '#265D9B'}} onClick={() => {
-            /* setOpen(true); */
-            updateInfofromForm();
-            setCurrentTab('3');
-            }}>
-            Próximo
+        <Button variant='contained' sx={{bgcolor: '#265D9B'}} onClick={handleSend}>
+            Gravar
         </Button>
-
-        <Collapse in={open}>
-            <Alert
-            action={
-                <IconButton
-                aria-label="close"
-                color="inherit"
-                size="small"
-                onClick={() => {
-                    setOpen(false);
-                }}
-                >
-                <CloseIcon fontSize="inherit" />
-                </IconButton>
-            }
-            sx={{ mb: 2 }}
-            >
-            {JSON.stringify(info)}
-            </Alert>
-        </Collapse>
     </Grid>  
+            
+    <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={backdrop_show}
+        
+      >
+        <Paper elevation={3}  sx={{display: 'flex', bgcolor: 'white', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '40%', width: '40%'}}>
+            <Typography variant='h5' fontWeight={'bold'} sx={{margin:'20px'}}>Preencha os campos corretamente!</Typography>
+            <Button variant='contained' sx={{bgcolor: '#265D9B'}} size='large' onClick={() => {setBackdropShow(false)}}>Ok</Button>
+        </Paper>;
+      </Backdrop>
+    </Box>
     </Box>
   );
 };
