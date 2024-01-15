@@ -77,7 +77,6 @@ function DiuInsertionForm ({currentTab, setCurrentTab, info, setInfo}:{currentTa
   };
 
 
-  const [open, setOpen] = useState(false);
 
   const updateInfofromForm = () => {
     // Use the spread operator to create a copy of the current dictionary
@@ -399,11 +398,6 @@ function DiuInsertionForm ({currentTab, setCurrentTab, info, setInfo}:{currentTa
                             />
                         </Stack>
                 </Grid>    
-            
-            
-  
-     
-                
             
     <Grid item xs={12} sm={12}>
         <Button type="submit" variant='contained' sx={{bgcolor: '#265D9B'}} onClick={() => {
