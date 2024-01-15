@@ -1,5 +1,23 @@
 import dayjs, { Dayjs } from 'dayjs';
-import { createTheme } from '@mui/material/styles';
+
+export const escolaridadeOptions = ['Analfabeta', 
+'Fundamental - Incompleto',
+'Fundamental - Completo',
+'Médio - Incompleto',
+'Médio - Completo',
+'Superior - Incompleto',
+'Superior - Completo',
+'Pós-graduação - Incompleto',
+'Pós-graduação - Completo'];
+
+export const racaOptions = [                
+    'BRANCA',
+    'PRETA',
+    'AMARELO',
+    'PARDA',
+    'INDÍGENA'];
+
+export const estadoCivilOptions = ['Solteira', 'Casada', 'Separada', 'Divorciada', 'Viúva'];
 
 
 export function getEscolaridade(key: number): string
@@ -17,6 +35,60 @@ export function getEscolaridade(key: number): string
     return escolaridade[key];
 }
 
+export const unidades_centro_de_atendimentos = ['Abraão',
+    'Agronômica',
+    'Alto Ribeirão',
+    'Armação',
+    'Balneário',
+    'Barra da Lagoa',
+    'Cachoeira do Bom Jesus',
+    'Caieira da Barra do Sul',
+    'Campeche',
+    'Canasvieiras',
+    'Canto da Lagoa',
+    'Capivari',
+    'Capoeiras',
+    'Carianos',
+    'Centro',
+    'Coloninha',
+    'Coqueiros',
+    'Córrego Grande',
+    'Costa da Lagoa',
+    'Costeira do Pirajubaé',
+    'Estreito',
+    'Fazenda do Rio Tavares',
+    'Ingleses',
+    'Itacorubi',
+    'Jardim Atlântico',
+    'João Paulo',
+    'Jurerê',
+    'Lagoa da Conceição',
+    'Monte Cristo',
+    'Monte Serrat',
+    'Morro das Pedras',
+    'Novo Continente',
+    'Pantanal',
+    'Pântano do Sul',
+    'Ponta das Canas',
+    'Prainha',
+    'Ratones',
+    'Ribeirão da Ilha',
+    'Rio Tavares',
+    'Rio Vemelho',
+    'Saco dos Limões',
+    'Saco Grande',
+    'Santinho',
+    'Santo Antônio de Lisboa',
+    'Sapé',
+    'Tapera',
+    'Trindade',
+    'Vargem Grande',
+    'Vargem Pequena',
+    'Vila Aparecida',
+    'Policlínica Centro',
+    'Policlínica Rio Tavares',
+    'Policlínica Continente',
+    'Policlínica da Mulher e da Criança'];
 
 export function getCentroSaudeReferencia(key: number): string
 {

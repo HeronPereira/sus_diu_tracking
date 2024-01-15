@@ -7,7 +7,7 @@ import SearchTable from '../components/SearchTable'
 import React from "react";
 import { Chart } from "react-google-charts";
 import { useRouter } from 'next/navigation'
-import { defaultDictionary } from '../utils/utils'
+import { defaultDictionary, escolaridadeOptions, estadoCivilOptions, racaOptions, unidades_centro_de_atendimentos } from '../utils/utils'
 import axios from 'axios'
 import dayjs from 'dayjs'
 
@@ -39,16 +39,28 @@ export const data2 = [
   ["Modelo", "Quantidade aplicada"],
   ["Prata", 2],
   ["Mirena", 2],
-  ["Cobre", 11],
-  ["Kyleena", 2],
 ];
 
 export const options2 = {
-  title: "Modelos de DIU mais procurados",
+  title: "Relação busca por DIU por idade",
   pieHole: 0.4,
   is3D: false,
 };
-
+export const options3 = {
+  title: "Relação busca por DIU por escolaridade",
+  pieHole: 0.4,
+  is3D: false,
+};
+export const options4 = {
+  title: "Relação busca por DIU por raça ou cor",
+  pieHole: 0.4,
+  is3D: false,
+};
+export const options5 = {
+  title: "Relação busca por DIU por estado civil",
+  pieHole: 0.4,
+  is3D: false,
+};
 
 export const dataEscolaridade = [
   ['Escolaridade', 'Quantidade'],
@@ -163,6 +175,12 @@ const countElementsInRange = (
   }, 0);
 };
 
+const getAge = (date: dayjs.Dayjs) => {
+  return dayjs().diff(date, 'year');
+}
+
+
+
 /* ------------------------------------------------------------------------------------------------------------------- */
 export default function Dashboard() {
 
@@ -174,9 +192,23 @@ export default function Dashboard() {
   const [databaseRows, setDatabaseRows] = React.useState<typeof defaultDictionary[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [loadCharts, setLoadCharts] = React.useState(false);
+
   let chart1Data: typeof data = [["Data de registro", "Quantidade de registros"]];
+  let chart2Data: typeof data2 = [["Faixa de idade", "Quantidade de registros"]];
+  let chart3Data: typeof data2 = [["Escolaridade", "Quantidade de registros"]];
+  let chart4Data: typeof data2 = [["Cor ou raça", "Quantidade de registros"]];
+  let chart5Data: typeof data2 = [["Estado civil", "Quantidade de registros"]];
+  let chart6Data: typeof data2 = [["Estado civil", "Quantidade de registros"]];
 
   const [chart1DataShow, setChart1DataShow] = React.useState<typeof chart1Data>();
+  const [chart2DataShow, setChart2DataShow] = React.useState<typeof chart2Data>();
+  const [chart3DataShow, setChart3DataShow] = React.useState<typeof chart3Data>();
+  const [chart4DataShow, setChart4DataShow] = React.useState<typeof chart4Data>();
+  const [chart5DataShow, setChart5DataShow] = React.useState<typeof chart5Data>();
+  const [chart6DataShow, setChart6DataShow] = React.useState<typeof chart6Data>();
+
+
+  // Chart1: Line chart registers per Time
   const updateChar1Data = () => {
 
    // get the range of the registers
@@ -249,6 +281,136 @@ export default function Dashboard() {
 
   }
 
+  // Chart2: Pie chart percent of registers per age
+  const updateChart2Data = () => {
+    const ageRange = ['16 ou menos', '17 a 25', '26 a 35', '36 a 45', '46 a 55', '56 ou mais'];
+
+    const registers = [0, 0, 0, 0, 0, 0];
+
+    for (let patient of databaseRows) {
+      const age = getAge(dayjs(patient.nascimento));
+      if (age < 16) {
+        registers[0] += 1;
+      } else if (age >= 16 && age < 26) {
+        registers[1] += 1;
+      } else if (age >= 26 && age < 36) {
+        registers[2] += 1;
+      } else if (age >= 36 && age < 46) {
+        registers[3] += 1;
+      } else if (age >= 46 && age < 56) {
+        registers[4] += 1;
+      } else if (age >= 56) {
+        registers[5] += 1;
+      }
+    }
+
+    for (let i in ageRange) {
+
+      chart2Data.push([ageRange[i], registers[i]]);
+    }
+
+    setChart2DataShow(chart2Data);
+    console.log(chart2Data);
+  }
+
+  // Chart3: Pie chart percent of registers per escolaridade
+  const updateChart3Data = () => {
+    const options = escolaridadeOptions;
+
+    let counts = Array.from({length: options.length}, () => 0); 
+
+    for (let patient of databaseRows) {
+      for(let i in options)
+      {
+        if(patient.escolaridade == options[i])
+        {
+          counts[i] += 1;
+        }
+      }
+    }
+
+    
+    for (let i in options)
+    {
+      chart3Data.push([options[i], counts[i]]);
+    }
+    setChart3DataShow(chart3Data);
+
+  }
+  // Chart4: Pie chart percent of registers per cor
+  const updateChart4Data = () => {
+    const options = racaOptions;
+
+    let counts = Array.from({length: options.length}, () => 0); 
+
+    for (let patient of databaseRows) {
+      for(let i in options)
+      {
+        if(patient.cor == options[i])
+        {
+          counts[i] += 1;
+        }
+      }
+    }
+    
+    for (let i in options)
+    {
+      chart4Data.push([options[i], counts[i]]);
+    }
+    setChart4DataShow(chart4Data);
+    console.log(chart4Data);
+  }
+
+  // Chart5: Pie chart percent of registers per estadoCivil
+  const updateChart5Data = () => {
+    const options = estadoCivilOptions;
+
+    let counts = Array.from({length: options.length}, () => 0); 
+
+    for (let patient of databaseRows) {
+      for(let i in options)
+      {
+        if(patient.estadoCivil == options[i])
+        {
+          counts[i] += 1;
+        }
+      }
+    }
+
+    
+    for (let i in options)
+    {
+      chart5Data.push([options[i], counts[i]]);
+    }
+    setChart5DataShow(chart3Data);
+
+  }
+  
+    // Chart5: Pie chart percent of registers per estadoCivil
+    const updateChart6Data = () => {
+      const options = unidades_centro_de_atendimentos;
+  
+      let counts = Array.from({length: options.length}, () => 0); 
+  
+      for (let patient of databaseRows) {
+        for(let i in options)
+        {
+          if(patient.centroSaudeReferencia == options[i])
+          {
+            counts[i] += 1;
+          }
+        }
+      }
+  
+      
+      for (let i in options)
+      {
+        chart6Data.push([options[i], counts[i]]);
+      }
+      setChart6DataShow(chart6Data);
+  
+    }
+    
   const getDatabase = async () => {
     
     try {
@@ -275,9 +437,20 @@ export default function Dashboard() {
     if(loadCharts)
     {
       updateChar1Data();
+      updateChart2Data();
+      updateChart3Data();
+      updateChart4Data();
+      updateChart5Data();
+      updateChart6Data();
       setLoadCharts(false);
     }
-  }, [loadCharts, chart1Data, chart1DataShow]);
+  }, [loadCharts, 
+    chart1Data, chart1DataShow, 
+    chart2Data, chart2DataShow, 
+    chart3Data, chart3DataShow, 
+    chart4Data, chart4DataShow, 
+    chart5Data, chart5DataShow, 
+    chart6Data, chart6DataShow]);
   
   if(isLoading){
   
@@ -297,7 +470,7 @@ export default function Dashboard() {
           
             <Box sx={{ height: '100%', width: '85%', display: 'flex', flexDirection: 'column', padding: '8px', alignSelf: 'end'}}>
     {/* ---------------------------------------------------------------------------------------------------------------------------- */}          
-              <Button onClick={updateChar1Data}>Teste</Button>
+              <Button onClick={updateChart4Data}>Teste</Button>
     {/* ---------------------------------------------------------------------------------------------------------------------------- */}
              
               <Box sx={{ height: '100%', width: '100%', padding: '8px', display: 'flex', flexDirection: 'row'}}>
@@ -316,39 +489,36 @@ export default function Dashboard() {
                           chartType="PieChart"
                           width="100%"
                           height="100%"
-                          data={data2}
+                          data={chart2DataShow}
                           options={options2}
                         />
                   </Box>
                   <Box sx={{ height: '100%', width: '100%',  display: 'flex', flexDirection: 'row'}}>
                     <Box sx={{ height: '100%', width: '33%', display: 'flex', flexDirection: 'column'}}>
-                      <Typography sx={{fontWeight: 'bold'}}>Registro por Escolaridade</Typography>
-                        <Chart
-                          chartType="ColumnChart"
+                      <Chart
+                          chartType="PieChart"
                           width="100%"
                           height="100%"
-                          data={dataEscolaridade}
-                          style={{flexShrink:1, padding:'2px'}}
+                          data={chart3DataShow}
+                          options={options3}
                         />
                     </Box>
                         <Box sx={{ height: '100%', width: '33%',  display: 'flex', flexDirection: 'column'}}>
-                        <Typography sx={{fontWeight: 'bold'}}>Registro por Cor/Raça</Typography>
-                         <Chart
-                          chartType="ColumnChart"
+                        <Chart
+                          chartType="PieChart"
                           width="100%"
                           height="100%"
-                          data={dataRaca}
-                          style={{flexShrink:1, padding:'2px'}}
+                          data={chart4DataShow}
+                          options={options4}
                         />
                         </Box>
                         <Box sx={{ height: '100%', width: '33%',  display: 'flex', flexDirection: 'column'}}>
-                        <Typography sx={{fontWeight: 'bold'}}>Registro por Estado Civil</Typography>
-                         <Chart
-                          chartType="ColumnChart"
+                        <Chart
+                          chartType="PieChart"
                           width="100%"
                           height="100%"
-                          data={dataEstadoCivil}
-                          style={{flexShrink:1, padding:'2px'}}
+                          data={chart5DataShow}
+                          options={options5}
                         />
                         </Box>
                   </Box>
@@ -357,7 +527,7 @@ export default function Dashboard() {
 
               <Box sx={{height: '50%', width: '100%', padding: '8px', display: 'flex', flexDirection: 'column'}}>
                 <Typography sx={{fontWeight: 'bold'}}>Registros por Unidades de Saúde</Typography>
-                <Chart chartType="ColumnChart" width="100%" height="100%" data={data4} />
+                <Chart chartType="ColumnChart" width="100%" height="100%" data={chart6DataShow} />
               </Box>
             
             </Box>
