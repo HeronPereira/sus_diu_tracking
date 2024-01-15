@@ -2,25 +2,20 @@
 import Image from 'next/image'
 
 import Navbar from '../components/Navbar'
-import { Box, Grid, Typography } from '@mui/material'
+import { Box, Button, Grid, Typography } from '@mui/material'
 import SearchTable from '../components/SearchTable'
 import React from "react";
 import { Chart } from "react-google-charts";
+import { useRouter } from 'next/navigation'
+import { defaultDictionary } from '../utils/utils'
+import axios from 'axios'
+import dayjs from 'dayjs'
+
 
 export const data = [
   [{ type: "date", label: "Day" }, "Quantidade de registros"],
   [new Date(2014, 0), 1],
   [new Date(2014, 1), 2],
-  [new Date(2014, 2), 0],
-  [new Date(2014, 3), 3],
-  [new Date(2014, 4),0],
-  [new Date(2014, 5), 5],
-  [new Date(2014, 6), 0],
-  [new Date(2014, 7), 11],
-  [new Date(2014, 8), 2],
-  [new Date(2014, 9), 0],
-  [new Date(2014, 10), 0],
-  [new Date(2014, 11), 1],
 ];
 
 export const options = {
@@ -29,14 +24,12 @@ export const options = {
   },
   series: {
     // Gives each series an axis name that matches the Y-axis below.
-    0: { axis: "Temps" },
-    1: { axis: "Daylight" },
+    0: { axis: "Registros" },
   },
   axes: {
     // Adds labels to each axis; they don't have to match the axis names.
     y: {
-      Temps: { label: "Temps (Celsius)" },
-      Daylight: { label: "Daylight" },
+      Registros: { label: "Quantidade de registros" },
     },
   },
 };
@@ -155,24 +148,165 @@ export const data4 = [
   [  'Policlínica da Mulher e da Criança',0]
 ];
 
+// Function to count elements within a specific year and month
+const countElementsInRange = (
+  array: dayjs.Dayjs[],
+  targetYear: number,
+  targetMonth: number
+): number => {
+  return array.reduce((count, date) => {
+    // Check if the date is within the specified year and month
+    if (date.year() === targetYear && date.month() === targetMonth) {
+      return count + 1;
+    }
+    return count;
+  }, 0);
+};
+
+/* ------------------------------------------------------------------------------------------------------------------- */
 export default function Dashboard() {
-  return (
-      <Box sx={{ display: 'flex', height: '100vh', width: '100vw', flexDirection: 'column', alignItems: 'normal' }}>
+
+  const testStuff = () => {
   
+  }
+  const router = useRouter();
+  const age = dayjs();
+  const [databaseRows, setDatabaseRows] = React.useState<typeof defaultDictionary[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [loadCharts, setLoadCharts] = React.useState(false);
+  let chart1Data: typeof data = [["Data de registro", "Quantidade de registros"]];
+
+  const [chart1DataShow, setChart1DataShow] = React.useState<typeof chart1Data>();
+  const updateChar1Data = () => {
+
+   // get the range of the registers
+   let sortYear = [];
+   let sortDate = [];
+   
+   for (let patient of databaseRows) {
+      sortDate.push(patient.nascimento);
+     sortYear.push(dayjs(patient.nascimento).get('year'));
+    
+   
+   }
+
+   // get the oldest and newest year in the registers and the correspondent months
+   const oldestYear = Math.min(...sortYear);
+   const oldestMonth = dayjs(sortDate[sortYear.indexOf(oldestYear)]).get('month');
+   const newestYear = dayjs().get('year');
+   const newestMonth = dayjs().get('month');
+   
+   console.log(sortDate);
+   console.log(oldestYear, oldestMonth);
+   console.log(newestYear, newestMonth);
+   // create an array of dayjs that starts at oldest year and correspondent month until today
+   const dateRange = [];
+   let countY = 0;
+   let countM = 0;
+   let j = oldestMonth;
+   for (let i = oldestYear; i <= newestYear; i++) {
+     // Run through each year
+     if(i != newestYear)
+     {
+       while(j < 12)
+       {
+         dateRange.push(dayjs().year(i).month(j));
+        j++;
+       }
+     }
+     else
+     {
+       while(j <= newestMonth)
+       {
+         dateRange.push(dayjs().year(i).month(j));
+
+        j++;
+       }
+     }
+     j = 0;
+
+   }
+
+   // go through range and count registers from the database
+   console.log(dateRange[0]);
+   let registrosNaData: typeof data = chart1Data;
+
+   const dateArray: dayjs.Dayjs[] = sortDate.map(dateValue => dayjs(dateValue));
+   
+   
+   for (let date of dateRange) {
+      const count = countElementsInRange(dateArray, date.year(), date.month());
+    //  chart1Data.push([dayjs(date).toDate().toString(), count.toString()]);
+    let registro = [dayjs(date).toDate(), count];
+     registrosNaData.push(registro);
+     console.log(registrosNaData);
+     chart1Data = registrosNaData;
+   }
+   
+   //console.log(dateRange);
+   setChart1DataShow(chart1Data);
+   console.log(chart1Data);
+
+  }
+
+  const getDatabase = async () => {
+    
+    try {
+      const database = await axios.get('/api/patients/');
+      setDatabaseRows(database.data);
+      setIsLoading(false);
+      
+      setLoadCharts(true);
+
+    } 
+    catch (error) {
+      console.error(error);
+      console.log('Not possible to GET database');
+      setIsLoading(false);
+      
+      setLoadCharts(true);
+    }
+  }
+  React.useEffect(() => {
+    getDatabase();
+  }, []);
+
+  React.useEffect(() => {
+    if(loadCharts)
+    {
+      updateChar1Data();
+      setLoadCharts(false);
+    }
+  }, [loadCharts, chart1Data, chart1DataShow]);
+  
+  if(isLoading){
+  
+    return <div>Loading...</div>
+  }
+
+ 
+  
+  return (
+   
+      <Box sx={{ display: 'flex', height: '100vh', width: '100vw', flexDirection: 'column', alignItems: 'normal' }}>
+        
           <Box sx={{ display: 'flex', width: '25%'}}>
             <Navbar/>
           </Box>
        
           
             <Box sx={{ height: '100%', width: '85%', display: 'flex', flexDirection: 'column', padding: '8px', alignSelf: 'end'}}>
-              
+    {/* ---------------------------------------------------------------------------------------------------------------------------- */}          
+              <Button onClick={updateChar1Data}>Teste</Button>
+    {/* ---------------------------------------------------------------------------------------------------------------------------- */}
+             
               <Box sx={{ height: '100%', width: '100%', padding: '8px', display: 'flex', flexDirection: 'row'}}>
                 <Box sx={{ height: '100%', width: '50%',  padding: '4px'}}>
                     <Chart
                       chartType="Line"
                       width="100%"
                       height="100%"
-                      data={data}
+                      data={chart1DataShow}
                       options={options}
                     />
                 </Box>
