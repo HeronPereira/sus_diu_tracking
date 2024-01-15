@@ -182,6 +182,7 @@ const handleSend = () => {
                 updatedInfo['centroSaudeReferencia'] = centrodesaude_paciente;
 
                 setInfo(updatedInfo);
+                
                 setReady(true);
             
         }

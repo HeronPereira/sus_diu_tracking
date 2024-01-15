@@ -22,7 +22,7 @@ import { Backdrop, Grid, Paper, Typography } from '@mui/material';
 
 
 
-export default function TabRegister({lookForCpf = '11111111111'}:{lookForCpf:string}) {
+export default function TabRegister({lookForCpf}:{lookForCpf:string}) {
   
   const [value, setValue] = React.useState('1');
   const router = useRouter();
@@ -45,20 +45,18 @@ export default function TabRegister({lookForCpf = '11111111111'}:{lookForCpf:str
     setTriggerDictionaryUpdate(true);
   }
   const createPatient = async () => {
-    console.log("Comando realizado logo antes do POST")
-    console.log(myDictionary);
+    console.log("Comando realizado logo antes do POST", myDictionary)
     await axios.post('/api/patients', myDictionary); 
-    router.push('/cadastroPaciente'); 
-    console.log('Cadastro Realizado com sucesso')
-    
+
     setContinueRegistrationScreen(true);     
   }
 
   const updatePatient = async (cpfSearched: string) => {
+    console.log("Comando realizado logo antes do PATCH", myDictionary)
     await axios.patch('/api/patients/' + cpfSearched, myDictionary); 
-    router.push('/cadastroPaciente');    
-    setContinueRegistrationScreen(true);  
 
+    
+    setContinueRegistrationScreen(true);    
   }
 
   
@@ -76,7 +74,8 @@ export default function TabRegister({lookForCpf = '11111111111'}:{lookForCpf:str
       catch (error) {
         console.error(error);
         console.log('Not possible to GET patient');
-        // setIsLoading(false);
+        handleUpdateDictionary(defaultDictionary);
+        setIsLoading(false);
       }
     }
 
@@ -88,21 +87,21 @@ export default function TabRegister({lookForCpf = '11111111111'}:{lookForCpf:str
     // console.log('Updated Parent State:', myDictionary);
     if (allowRequestDatabase) {
       // Perform the POST request or other logic with the updated state
-      if (myDictionary['cpf'] == '')
+      if (lookForCpf == '')
       {
-        createPatient();
         console.log('Create Request called:', myDictionary);
+        createPatient();
       }
       else
       {
-        updatePatient(lookForCpf);
         console.log('Update Request called:', myDictionary);
+        updatePatient(lookForCpf);
       }
       setAllowRequestDatabase(false);
     }
     if (triggerDictionaryUpdate) {
       // Perform the POST request or other logic with the updated state
-     console.log('dictionary updated:', myDictionary);
+     console.log('dictionary latest state:', myDictionary);
 
       // Reset triggerUpdate to false to avoid unnecessary calls
       setTriggerDictionaryUpdate(false);
@@ -116,17 +115,7 @@ export default function TabRegister({lookForCpf = '11111111111'}:{lookForCpf:str
 
 
  
-  const nextTab = (currentValue: string) => {
-    const intValue = parseInt(currentValue)
-    if (intValue > 5) {
-      router.push('/buscaPaciente');
-    }
-    else
-    {
-      setValue((intValue + 1).toString());
-    }
-    setContinueRegistrationScreen(false);
-  }
+  
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -158,16 +147,17 @@ export default function TabRegister({lookForCpf = '11111111111'}:{lookForCpf:str
         
       >
       <Paper elevation={3}  sx={{display: 'flex', bgcolor: 'white', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '50%', width: '50%'}}>
+                
                 <Grid container spacing={2} padding={2}>
                     <Grid item xs={12} sm={12}>
-                        <Typography variant='h5' fontWeight={'bold'} sx={{margin:'20px'}}>Registrado. Deseja continuar com dados desta paciente?</Typography>
+                        <Typography variant='h5' fontWeight={'bold'} sx={{ margin: '20px', width: '100%', display: 'flex' , flexDirection: 'row'}}>Registrado com sucesso</Typography>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <Button variant='contained' sx={{bgcolor: '#265D9B'}} size='large' onClick={()=>{nextTab(value)}}>Sim</Button>
+                    <Grid item xs={12} sm={6}  sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'row'}}>
+                        <Button variant='contained' sx={{bgcolor: '#265D9B'}} size='large' onClick={()=>{router.push('/cadastroPaciente/' + myDictionary.cpf);}}>Continuar</Button>
                     </Grid>
                     
-                    <Grid item xs={12} sm={6}>
-                        <Button variant='contained' sx={{bgcolor: '#265D9B'}} size='large' onClick={() => {router.push('/buscaPaciente'); }}>Não</Button>
+                    <Grid item xs={12} sm={6}  sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'row'}}>
+                        <Button variant='outlined' sx={{bgcolor: '#265D9B'}} size='large' onClick={() => {router.push('/buscaPaciente'); }}>Sair</Button>
                     </Grid>
                 </Grid>
             </Paper>

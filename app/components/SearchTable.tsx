@@ -1,14 +1,11 @@
 'use client'
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
-import InputBase from '@mui/material/InputBase';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
-import DirectionsIcon from '@mui/icons-material/Directions';
-import { Box, Grid, MenuItem, Select } from '@mui/material';
+import { Backdrop, Box, Button, Grid, MenuItem, Select, ThemeProvider, Typography } from '@mui/material';
 import { DataGrid, GridColDef, GridToolbar, GridValueGetterParams } from '@mui/x-data-grid';
+import { defaultDictionary } from '../utils/utils';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 const columns: GridColDef[] = [
   
@@ -128,105 +125,84 @@ const rows = [
 
 export default function SearchTable() {
 
+  const data_keys = Object.keys(defaultDictionary)
+  const router = useRouter();
+
   
+  let array_cols: GridColDef[] = [{ field: 'id', headerName: 'ID', width: 90 }];
 
-  const [filtroPosto, setFiltroPosto] = React.useState('');
+  for (let key of data_keys)
+  {
+    array_cols.push({ field: key, headerName: key, width: 150, editable: true});
+  }
 
-  const handleFiltroPostoSelecionado = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFiltroPosto((event.target as HTMLInputElement).value);
-  };
+  const testResult = () =>{
+    console.log(array_cols);
+  }
+
+  const [databaseRows, setDatabaseRows] = React.useState<typeof defaultDictionary[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  const getDatabase = async () => {
+    
+    try {
+      const database = await axios.get('/api/patients/');
+      setDatabaseRows(database.data);
+      setIsLoading(false);
+
+    } 
+    catch (error) {
+      console.error(error);
+      console.log('Not possible to GET database');
+      setIsLoading(false);
+    }
+  }
+  React.useEffect(() => {
+    getDatabase();
+  }, []);
+
+  
+  const [selectedCpf, setSelectedCpf] = React.useState('');
+  const [confirmaExclusao, setConfirmaExclusao] = React.useState(false);
+
+  const deleteCPF = async (deleteThisCpf: string) => {
+    try{
+      await axios.delete('/api/patients/' + deleteThisCpf);
+      
+      setConfirmaExclusao(false);
+      console.log('Deleted')
+      router.push('/buscaPaciente');
+      router.refresh();
+      setIsLoading(true);
+      setSelectedCpf('');
+      getDatabase();
+    }
+    catch(error){
+      console.error(error);
+      setConfirmaExclusao(false)
+      console.log('Not possible to DELETE patient');
+    }
+  }
+
+  
+  if(isLoading){
+  
+    return <div>Loading...</div>
+  }
 
   return (
     
       <Box sx={{display: 'flex', flexDirection: 'column', margin: '2%', marginTop: '12%'}}>
-        <Box sx={{ height:'100%', width:'80%', flexDirection: 'column', display: 'flex', alignSelf:'center', alignItems: 'center' , justifyContent: 'center'}}> 
-          <Paper
-            component="form"
-            sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: '60%', alignContent: 'center' }}
-          >
-            <IconButton sx={{ p: '10px' }} aria-label="menu">
-              <MenuIcon />
-            </IconButton>
-            <InputBase
-              sx={{ ml: 1, flex: 1 }}
-              placeholder="Procurar por posto"
-              inputProps={{ 'aria-label': 'search google maps' }}
-            />
-             <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={filtroPosto}
-                        label="Centro de saúde de referência"
-                        onChange={handleFiltroPostoSelecionado}
-                        autoWidth
-                        >
-                            <MenuItem value={0}>Abraão</MenuItem>
-                            <MenuItem value={1}>Agronômica</MenuItem>
-                            <MenuItem value={2}>Alto Ribeirão</MenuItem>
-                            <MenuItem value={3}>Armação</MenuItem>
-                            <MenuItem value={4}>Balneário</MenuItem>
-                            <MenuItem value={5}>Barra da Lagoa</MenuItem>
-                            <MenuItem value={6}>Cachoeira do Bom Jesus</MenuItem>
-                            <MenuItem value={7}>Caieira da Barra do Sul</MenuItem>
-                            <MenuItem value={8}>Campeche</MenuItem>
-                            <MenuItem value={9}>Canasvieiras</MenuItem>
-                            <MenuItem value={10}>Canto da Lagoa</MenuItem>
-                            <MenuItem value={11}>Capivari</MenuItem>
-                            <MenuItem value={12}>Capoeiras</MenuItem>
-                            <MenuItem value={13}>Carianos</MenuItem>
-                            <MenuItem value={14}>Centro</MenuItem>
-                            <MenuItem value={15}>Coloninha</MenuItem>
-                            <MenuItem value={16}>Coqueiros</MenuItem>
-                            <MenuItem value={17}>Córrego Grande</MenuItem>
-                            <MenuItem value={18}>Costa da Lagoa</MenuItem>
-                            <MenuItem value={19}>Costeira do Pirajubaé</MenuItem>
-                            <MenuItem value={20}>Estreito</MenuItem>
-                            <MenuItem value={21}>Fazenda do Rio Tavares</MenuItem>
-                            <MenuItem value={22}>Ingleses</MenuItem>
-                            <MenuItem value={23}>Itacorubi</MenuItem>
-                            <MenuItem value={24}>Jardim Atlântico</MenuItem>
-                            <MenuItem value={25}>João Paulo</MenuItem>
-                            <MenuItem value={26}>Jurerê</MenuItem>
-                            <MenuItem value={27}>Lagoa da Conceição</MenuItem>
-                            <MenuItem value={28}>Monte Cristo</MenuItem>
-                            <MenuItem value={29}>Monte Serrat</MenuItem>
-                            <MenuItem value={30}>Morro das Pedras</MenuItem>
-                            <MenuItem value={31}>Novo Continente</MenuItem>
-                            <MenuItem value={32}>Pantanal</MenuItem>
-                            <MenuItem value={33}>Pântano do Sul</MenuItem>
-                            <MenuItem value={34}>Ponta das Canas</MenuItem>
-                            <MenuItem value={35}>Prainha</MenuItem>
-                            <MenuItem value={36}>Ratones</MenuItem>
-                            <MenuItem value={37}>Ribeirão da Ilha</MenuItem>
-                            <MenuItem value={38}>Rio Tavares</MenuItem>
-                            <MenuItem value={39}>Rio Vemelho</MenuItem>
-                            <MenuItem value={40}>Saco dos Limões</MenuItem>
-                            <MenuItem value={41}>Saco Grande</MenuItem>
-                            <MenuItem value={42}>Santinho</MenuItem>
-                            <MenuItem value={43}>Santo Antônio de Lisboa</MenuItem>
-                            <MenuItem value={44}>Sapé</MenuItem>
-                            <MenuItem value={45}>Tapera</MenuItem>
-                            <MenuItem value={46}>Trindade</MenuItem>
-                            <MenuItem value={47}>Vargem Grande</MenuItem>
-                            <MenuItem value={48}>Vargem Pequena</MenuItem>
-                            <MenuItem value={49}>Vila Aparecida</MenuItem>
-                            <MenuItem value={50}>Policlínica Centro</MenuItem>
-                            <MenuItem value={51}>Policlínica Rio Tavares</MenuItem>
-                            <MenuItem value={52}>Policlínica Continente</MenuItem>
-                            <MenuItem value={53}>Policlínica da Mulher e da Criança</MenuItem>
-                    </Select>
-            <IconButton type="button" sx={{ p: '10px' }} aria-label="search" onClick={() => {console.log(filtroPosto)}}>
-              <SearchIcon />
-            </IconButton>
-        
-          </Paper>
-        </Box>
+        <Button onClick={testResult}>Test stuff</Button>
+
 
         <Box sx={{flexDirection: 'column', display: 'flex', padding: '5%'}}>
             <DataGrid
               sx={{height: '100%', width: '100%'}}
-              rows={rows}
-              columns={columns}
+              rows={databaseRows}
+              columns={array_cols}
+
+              onRowClick={params => {setSelectedCpf(params.row.cpf)}}
               initialState={{
                 pagination: {
                   paginationModel: {
@@ -240,6 +216,44 @@ export default function SearchTable() {
               slots={{toolbar: GridToolbar}}
             />
         </Box>
+        <Grid container spacing={2} padding={2} sx={{ width: '100%', display: 'flex' , flexDirection: 'row'}}>
+          
+          <Grid item xs={12} sm={12} sx={{justifyContent: 'center', alignItems: 'center', display: 'flex' , flexDirection: 'column'}}>
+            <Typography variant="h5" fontWeight="bold">CPF Selecionado: {selectedCpf}</Typography>
+            <Typography variant="body1" sx={{margin: '8px'}}>O que deseja fazer? Clique em um registro da tabela para selecionar.</Typography>
+          </Grid>
+          <Grid item xs={12} sm={6} sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'row'}}>
+            <Button variant="contained" color='secondary' onClick={() => {(selectedCpf !== '') ? router.push('/cadastroPaciente/' + selectedCpf) : console.warn('Selecione um item primeiro')}}>Editar</Button>
+          </Grid>
+          <Grid item xs={12} sm={6} sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'row'}}>
+            <Button variant="contained" color="error"  onClick={() => {(selectedCpf !== '') ? setConfirmaExclusao(true) : console.warn('Selecione um item primeiro')}}>Excluir</Button>
+       
+          </Grid>
+        </Grid>
+
+        <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={confirmaExclusao}
+        
+      >
+      <Paper elevation={3}  sx={{display: 'flex', bgcolor: 'white', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '50%', width: '50%'}}>
+      <Grid container spacing={2} padding={2} sx={{ width: '100%', display: 'flex' , flexDirection: 'row'}}>
+          
+          <Grid item xs={12} sm={12} sx={{justifyContent: 'center', alignItems: 'center', display: 'flex' , flexDirection: 'column'}}>
+            <Typography variant="h5" fontWeight="bold">Tem certeza que deseja excluir: {selectedCpf}?</Typography>
+            <Typography variant="body1" sx={{margin: '8px'}}>Uma vez excluído não será possível recuperar este registro.</Typography>
+          </Grid>
+          <Grid item xs={12} sm={6} sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'row'}}>
+            <Button variant="contained" color='error' onClick={() => {deleteCPF(selectedCpf)}}>Sim</Button>
+          </Grid>
+          <Grid item xs={12} sm={6} sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'row'}}>
+            <Button variant="outlined" color="primary"  onClick={() => {setConfirmaExclusao(false)}}>Não</Button>
+       
+          </Grid>
+        </Grid>    
+      </Paper>
+          
+      </Backdrop>
     
       </Box>
 

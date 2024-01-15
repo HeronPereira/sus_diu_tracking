@@ -78,7 +78,36 @@ export async function PATCH(request: NextRequest,
 
 
 export async function DELETE(request: NextRequest,
-    {params}: {params: {id: number}}) {
+    {params}: {params: {cpf: string}}) {
+    
+        // realiza o pedido e retorna um body que a condição seja satisfeita (ou não caso não exista)
+        const patient = await prisma.patient.findUnique(
+            {
+                where: {
+                    cpf: params.cpf
+                }
+            }
+        );
+    
+        if (!patient)
+        {
+            return NextResponse.json(
+                {error: 'Patient not found'},
+                {status: 404},
+                );
+        }
+
+        await prisma.patient.delete({
+            where: {
+                cpf: patient.cpf
+            }
+        });
+
+        return NextResponse.json(
+            {}
+            );
+    }
+  /*   {params}: {params: {cpf: string}}) {
 
     const body = await request.json();
     const validation = schema.safeParse(body);
@@ -93,7 +122,7 @@ export async function DELETE(request: NextRequest,
 
     const existingPatient = await prisma.patient.findUnique({
         where: {
-            cpf: body.cpf
+            cpf: params.cpf
         }
     })
 
@@ -104,14 +133,15 @@ export async function DELETE(request: NextRequest,
             {status: 404},
             );
     }
+    
+    console.log(existingPatient);
 
     await prisma.patient.delete({
         where: {
-            cpf: body.cpf
+            cpf: existingPatient.cpf
         }
     })
-
     return NextResponse.json(
         {message: 'Patient deleted'},
         );
-}
+} */

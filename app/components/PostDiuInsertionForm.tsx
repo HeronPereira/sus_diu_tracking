@@ -62,18 +62,9 @@ function PostDiuInsertionForm ({goBackFirstTab, info, setInfo, setReady}:{goBack
   
   
   
-    const [intercorrencias_selecionadas, set_intercorrencias_selecionadas] = React.useState<string[]>([info['intercorrenciasComunicadasPosInsercao']]);
+    const [intercorrencias_selecionadas, set_intercorrencias_selecionadas] = React.useState(info['intercorrenciasPosInsercao']);
   
-    const handle_intercorrencias = (event: SelectChangeEvent<typeof intercorrencias_selecionadas>) => {
-      const {
-        target: { value },
-      } = event;
-      set_intercorrencias_selecionadas(
-        // On autofill we get a stringified value.
-        typeof value === 'string' ? value.split(',') : value,
-      );
-    };  
-
+  
 
     const [feito_uso_de_usg, set_feito_uso_de_usg] = React.useState('');
     const [disable_resultado_usg, setDisableResultadoUsg] = React.useState(false);
@@ -328,35 +319,16 @@ const handleSend = () => {
                 
                 <Grid item xs={12} sm={6}>
                 
-                <FormControl sx={{ m: 1, width: 600 }}>   
-                <InputLabel id="demo-multiple-name-label">Intercorrências após a inserção com necessidade de comunicação</InputLabel>
-                        <Select
-                        labelId="demo-multiple-name-label"
-                        id="demo-multiple-name"
-                        multiple
-                        value={intercorrencias_selecionadas}
-                        onChange={handle_intercorrencias}
-                        renderValue={(selected) => (
-                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                              {selected.map((value) => (
-                                <Chip key={value} label={value} />
-                              ))}
-                            </Box>
-                          )}
-                        >
-                        {intercorrencias.map((name) => (
-                            <MenuItem
-                            key={name}
-                            value={name}
-                            
-                            >
-                            {name}
-                            </MenuItem>
-                        ))}
-                        </Select>
-                        
-                </FormControl>
-
+                <TextField
+                            label="Intercorrências após a inserção com necessidade de comunicação."
+                            variant="outlined"
+                            margin="normal"
+                            name="nome"
+                            value={intercorrencias_selecionadas}
+                            onChange={(event)=>{set_intercorrencias_selecionadas(event.target.value)}}
+                            fullWidth
+                            />
+               
                         <TextField
                             label="Outra intercorrência? Qual? Relate aqui."
                             variant="outlined"

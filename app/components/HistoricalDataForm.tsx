@@ -86,30 +86,11 @@ function HistoricalDataForm ({goBackFirstTab, info, setInfo, setReady}:{goBackFi
     'Outro',
   ];
 
-  const [metodos_anticonceptivos_anteriores, setMetodos_anticonceptivos_anteriores] = React.useState<string[]>([info['contraceptivosAnteriores']]);
+  const [metodos_anticonceptivos_anteriores, setMetodos_anticonceptivos_anteriores] = React.useState(info['metodosAnticonceptivosAnteriores']);
 
-  const handle_metodos_anticonceptivos_anteriores = (event: SelectChangeEvent<typeof metodos_anticonceptivos_anteriores>) => {
-    const {
-      target: { value },
-    } = event;
-    setMetodos_anticonceptivos_anteriores(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value,
-    );
-  };  
   
-  const [metodos_anticonceptivos_atuais, setMetodos_anticonceptivos_atuais] = React.useState<string[]>([info['contraceptivosAtuais']]);
+  const [metodos_anticonceptivos_atuais, setMetodos_anticonceptivos_atuais] = React.useState(info['metodosAnticonceptivosAtuais']);
 
-  const handle_metodos_anticonceptivos_atuais = (event: SelectChangeEvent<typeof metodos_anticonceptivos_atuais>) => {
-    const {
-      target: { value },
-    } = event;
-    setMetodos_anticonceptivos_atuais(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value,
-    );
-  };  
-  
   
   const [preventivoAlterado, setPreventivoAlterado] = React.useState(info['ultimoPreventivoAlterado']);
 
@@ -306,6 +287,7 @@ const handleSend = () => {
 
       
           setInfo(updatedInfo);
+         
           setReady(true);
 
             
@@ -502,67 +484,28 @@ const handleSend = () => {
                 
             
                 <Grid item xs={12} sm={4}>
-                    <FormControl sx={{ m: 1, width: 400 }}>    
-                    <InputLabel id="demo-multiple-name-label">Métodos contraceptivos usados anteriormente</InputLabel>
-                            <Select
-                            labelId="demo-multiple-name-label"
-                            id="demo-multiple-name"
-                            multiple
+                <TextField
+                            label="Métodos contraceptivos usados anteriormente"
+                            variant="outlined"
+                            margin="normal"
+                            name="nome"
                             value={metodos_anticonceptivos_anteriores}
-                            onChange={handle_metodos_anticonceptivos_anteriores}
-                            renderValue={(selected) => (
-                                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                  {selected.map((value) => (
-                                    <Chip key={value} label={value} />
-                                  ))}
-                                </Box>
-                              )}
-                            
-                            >
-                            {metodos_anticonceptivos.map((name) => (
-                                <MenuItem
-                                key={name}
-                                value={name}
-                                
-                                >
-                                {name}
-                                </MenuItem>
-                            ))}
-                            </Select>
-                
-                    </FormControl>
-            </Grid>
+                            onChange={(event)=>{setMetodos_anticonceptivos_anteriores(event.target.value)}}
+                            fullWidth
+                            />
+                  </Grid>
 
             <Grid item xs={12} sm={6}>
+            <TextField
+                            label="Métodos contraceptivos usados atualmente"
+                            variant="outlined"
+                            margin="normal"
+                            name="nome"
+                            value={metodos_anticonceptivos_atuais}
+                            onChange={(event)=>{setMetodos_anticonceptivos_atuais(event.target.value)}}
+                            fullWidth
+                            />
                 
-            <FormControl sx={{ m: 1, width: 400 }}>   
-            <InputLabel id="demo-multiple-name-label">Métodos contraceptivos usados atualmente</InputLabel>
-                    <Select
-                    labelId="demo-multiple-name-label"
-                    id="demo-multiple-name"
-                    multiple
-                    value={metodos_anticonceptivos_atuais}
-                    onChange={handle_metodos_anticonceptivos_atuais}
-                    renderValue={(selected) => (
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                          {selected.map((value) => (
-                            <Chip key={value} label={value} />
-                          ))}
-                        </Box>
-                      )}
-                    >
-                    {metodos_anticonceptivos.map((name) => (
-                        <MenuItem
-                        key={name}
-                        value={name}
-                        
-                        >
-                        {name}
-                        </MenuItem>
-                    ))}
-                    </Select>
-                    
-                    </FormControl>
             </Grid>
             
             <Grid item xs={12} sm={3}>

@@ -28,6 +28,8 @@ export async function POST(request: NextRequest) {
     const patient = await prisma.patient.create({
         data: body
     })
+
+    console.log(patient)
     return NextResponse.json(
         patient, {status: 201});
 }
