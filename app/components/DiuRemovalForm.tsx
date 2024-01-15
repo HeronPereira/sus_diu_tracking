@@ -5,7 +5,7 @@ import Button from '@mui/material/Button'
 import MenuItem from '@mui/material/MenuItem';
 
 import InputAdornment from '@mui/material/InputAdornment';
-import { Alert, Box, Collapse, FormControlLabel, FormLabel, Grid, IconButton, InputLabel, Radio, RadioGroup, Select, Stack, Switch, Typography } from '@mui/material';
+import { Alert, Backdrop, Box, Collapse, FormControlLabel, FormLabel, Grid, IconButton, InputLabel, Paper, Radio, RadioGroup, Select, Stack, Switch, Typography } from '@mui/material';
 import { bool, number } from 'yup';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
@@ -21,8 +21,10 @@ Prescrição de novo contraceptivo;
 Será inserido novo DIU?
  */
 
-function DiuRemovalForm({currentTab, setCurrentTab, info, setInfo}:{currentTab: string, setCurrentTab: (tab: string) => void, info: any, setInfo: (inf: any) => void}) {
-
+function DiuRemovalForm({goBackFirstTab, info, setInfo, setReady}:{goBackFirstTab: (inf: string) => void, info: any, setInfo: (inf: any) => void,  setReady: (inf: boolean) => void}) {
+  
+  // Use the spread operator to create a copy of the current dictionary
+  const updatedInfo = { ...info };
   
   const [data_remocao_paciente, setDataRemocaoPaciente] = useState(info.dataRemocaoDIU);
   const [motivo_remocao_paciente, setMotivoRemocaoPaciente] = useState(info.motivoRemocaoDIU);
@@ -34,22 +36,62 @@ function DiuRemovalForm({currentTab, setCurrentTab, info, setInfo}:{currentTab: 
   };
 
   
-  const [open, setOpen] = React.useState(false);
+  const [backdrop_show, setBackdropShow] = useState(false);
+  const [mustRegisterPersonalDataFirst, setMustRegisterPersonalDataFirst] = useState(false);
+  
+  const checkAllFieldsAreFine = () => {
+  
+      if (data_remocao_paciente == '' || data_remocao_paciente == undefined || data_remocao_paciente == null)
+      {
+          return false;
+      }
+      else if (motivo_remocao_paciente == '' || motivo_remocao_paciente == undefined || motivo_remocao_paciente == null)
+      {
+          return false;
+      }
+      else if (prescricao_novo_contraceptivo_paciente == '' || prescricao_novo_contraceptivo_paciente == undefined || prescricao_novo_contraceptivo_paciente == null)
+      {
+          return false;
+      }
+      else if (newDIU == '' || newDIU == undefined || newDIU == null)
+      {
+          return false;
+      }
+      else
+      {
+          return true;
+      }
+  }
+  
+  
+  const handleSend = () => {
+          if(info['cpf'] == '')
+          {
+              // Tem que cadastrar o paciente primeiro
+              // Sobe Backdrop informando isso
+              setMustRegisterPersonalDataFirst(true);
+              // Botão de retornar que irá baixar o popup e voltar para tela de cadastro
+          }
+          else if(checkAllFieldsAreFine())
+          {
 
-  const updateInfofromForm = () => {
-    // Use the spread operator to create a copy of the current dictionary
-    const updatedInfo = { ...info };
-
-    // Update or add a new key-value pair
-    updatedInfo.dataRemocaoDIU=data_remocao_paciente?.format('YYYY/MM/DD');
-    updatedInfo.motivoRemocaoDIU=motivo_remocao_paciente;
-    updatedInfo.prescricaoOutroContraceptivo=prescricao_novo_contraceptivo_paciente;
-    updatedInfo.seraInseridoNovoDIU=newDIU;
-
-    setInfo(updatedInfo);
-
-    
-}
+            updatedInfo['dataRemocaoDIU'] = data_remocao_paciente;
+            updatedInfo['motivoRemocaoDIU'] = motivo_remocao_paciente;
+            updatedInfo['prescricaoOutroContraceptivo'] = prescricao_novo_contraceptivo_paciente;
+            updatedInfo['seraInseridoNovoDIU'] = newDIU;
+        
+            
+            setInfo(updatedInfo);
+            setReady(true);
+  
+              
+          }
+          else
+          {
+              setBackdropShow(true);
+          }
+          
+      }
 
   return (
     
@@ -111,39 +153,33 @@ function DiuRemovalForm({currentTab, setCurrentTab, info, setInfo}:{currentTab: 
 
 
             </Grid>
-       
-  
-     
-                
-            
-    <Grid item xs={12} sm={12}>
-        <Button type="submit" variant='contained' sx={{bgcolor: '#265D9B'}} onClick={() => {
-            setOpen(true);
-            updateInfofromForm();
-            }}>
+            <Grid item xs={12} sm={12}>
+        <Button variant='contained' sx={{bgcolor: '#265D9B'}} onClick={handleSend}>
             Gravar
         </Button>
-
-        <Collapse in={open}>
-            <Alert
-            action={
-                <IconButton
-                aria-label="close"
-                color="inherit"
-                size="small"
-                onClick={() => {
-                    setOpen(false);
-                }}
-                >
-                <CloseIcon fontSize="inherit" />
-                </IconButton>
-            }
-            sx={{ mb: 2 }}
-            >
-            {JSON.stringify(info)}
-            </Alert>
-        </Collapse>
     </Grid>  
+            
+    <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={backdrop_show}
+        
+      >
+        <Paper elevation={3}  sx={{display: 'flex', bgcolor: 'white', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '40%', width: '40%'}}>
+            <Typography variant='h5' fontWeight={'bold'} sx={{margin:'20px'}}>Preencha os campos corretamente!</Typography>
+            <Button variant='contained' sx={{bgcolor: '#265D9B'}} size='large' onClick={() => {setBackdropShow(false)}}>Ok</Button>
+        </Paper>;
+      </Backdrop>
+
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={mustRegisterPersonalDataFirst}
+        
+      >
+        <Paper elevation={3}  sx={{display: 'flex', bgcolor: 'white', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '40%', width: '40%'}}>
+            <Typography variant='h5' fontWeight={'bold'} sx={{margin:'20px'}}>É necessário cadastrar os dados pessoais primeiro!</Typography>
+            <Button variant='contained' sx={{bgcolor: '#265D9B'}} size='large' onClick={() => {setMustRegisterPersonalDataFirst(false); goBackFirstTab('1')}}>Ok</Button>
+        </Paper>;
+      </Backdrop>
   
     </Box>
   );

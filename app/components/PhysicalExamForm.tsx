@@ -5,26 +5,28 @@ import Button from '@mui/material/Button'
 import MenuItem from '@mui/material/MenuItem';
 
 import InputAdornment from '@mui/material/InputAdornment';
-import { Box, Grid, InputLabel, Select, Stack, Switch, Typography, Checkbox, RadioGroup, FormControlLabel, Radio, Collapse, Alert, IconButton } from '@mui/material';
+import { Box, Grid, InputLabel, Select, Stack, Switch, Typography, Checkbox, RadioGroup, FormControlLabel, Radio, Collapse, Alert, IconButton, Backdrop, Paper } from '@mui/material';
 import { bool, number } from 'yup';
 
 
 import CloseIcon from '@mui/icons-material/Close';
 
 
-function PhysicalExamForm({currentTab, setCurrentTab, info, setInfo}:{currentTab: string, setCurrentTab: (tab: string) => void, info: any, setInfo: (inf: any) => void}) {
+function PhysicalExamForm({goBackFirstTab, info, setInfo, setReady}:{goBackFirstTab: (inf: string) => void, info: any, setInfo: (inf: any) => void,  setReady: (inf: boolean) => void}) {
+
+  
+  // Use the spread operator to create a copy of the current dictionary
+  const updatedInfo = { ...info };
+
+const [peso_paciente, setPesoPaciente] = React.useState(info['pesokg']);
+const [altura_paciente, setAlturaPaciente] = React.useState(info['alturacm']);
+const [motivo_sem_teste_de_gravidez_paciente, setMotivoSemTesteDeGravidezPaciente] = React.useState(info['seSemTesteDeGravidezPorque']);
+const [quais_alteracoes_no_resultado_inspecao_genital_paciente, setQuaisAlteracoesNoResultadoInspecaoGenitalPaciente] = React.useState(info['qualAlteracaoInspecaoGenital']);
+const [quais_alteracoes_no_resultado_exame_especular_paciente, setQuaisAlteracoesNoResultadoExameEspecularPaciente] = React.useState(info['qualAlteracaoExameEspecular']);
 
   
 
-const [peso_paciente, setPesoPaciente] = React.useState(info.pesokg);
-const [altura_paciente, setAlturaPaciente] = React.useState(info.alturacm);
-const [motivo_sem_teste_de_gravidez_paciente, setMotivoSemTesteDeGravidezPaciente] = React.useState(info.seSemTesteDeGravidezPorque);
-const [quais_alteracoes_no_resultado_inspecao_genital_paciente, setQuaisAlteracoesNoResultadoInspecaoGenitalPaciente] = React.useState(info.qualAlteracaoInspecaoGenital);
-const [quais_alteracoes_no_resultado_exame_especular_paciente, setQuaisAlteracoesNoResultadoExameEspecularPaciente] = React.useState(info.qualAlteracaoExameEspecular);
-
-  
-
-const [teste_de_gravidez_alterado, set_teste_de_gravidez_alterado] = React.useState(info.resultadoTesteGravidez);
+const [teste_de_gravidez_alterado, set_teste_de_gravidez_alterado] = React.useState(info['resultadoTesteGravidez']);
 
 const handleTesteDeGravidezAlterado = (event: React.ChangeEvent<HTMLInputElement>) => {
   set_teste_de_gravidez_alterado((event.target as HTMLInputElement).value);
@@ -32,7 +34,7 @@ const handleTesteDeGravidezAlterado = (event: React.ChangeEvent<HTMLInputElement
 
 
 
-  const [realizou_teste_de_gravidez, set_realizou_teste_de_gravidez] = React.useState(info.realizouTesteGravidez);
+  const [realizou_teste_de_gravidez, set_realizou_teste_de_gravidez] = React.useState(info['realizouTesteGravidez']);
   const [disable_porque_falta_teste_gravidez, set_disable_porque_falta_teste_gravidez] = React.useState(false);
   const [disable_teste_gravidez_reagente, set_disable_teste_gravidez_reagente] = React.useState(false);
   
@@ -97,29 +99,58 @@ const handleTesteDeGravidezAlterado = (event: React.ChangeEvent<HTMLInputElement
   };
 
   
-  const [open, setOpen] = React.useState(false);
+  const [backdrop_show, setBackdropShow] = useState(false);
+  const [mustRegisterPersonalDataFirst, setMustRegisterPersonalDataFirst] = useState(false);
+  
+  const checkAllFieldsAreFine = () => {
+  
+      if (resultado_inspecao_genital_alterado == '' || resultado_inspecao_genital_alterado == undefined || resultado_inspecao_genital_alterado == null)
+      {
+          return false;
+      }
+      else if (resultado_exame_especular_alterado == '' || resultado_exame_especular_alterado == undefined || resultado_exame_especular_alterado == null)
+      {
+          return false;
+      }
+      else
+      {
+          return true;
+      }
+  }
+  
+  
+  const handleSend = () => {
+          if(info['cpf'] == '')
+          {
+              // Tem que cadastrar o paciente primeiro
+              // Sobe Backdrop informando isso
+              setMustRegisterPersonalDataFirst(true);
+              // Botão de retornar que irá baixar o popup e voltar para tela de cadastro
+          }
+          else if(checkAllFieldsAreFine())
+          {
 
-  const updateInfofromForm = () => {
-    // Use the spread operator to create a copy of the current dictionary
-    const updatedInfo = { ...info };
-
-    // Update or add a new key-value pair
-    updatedInfo.alturacm=altura_paciente;
-    updatedInfo.pesokg=peso_paciente;
-    updatedInfo.imc= (parseInt(peso_paciente)/(parseInt(altura_paciente)/100 * parseInt(altura_paciente)/100)).toString();
-    updatedInfo.realizouTesteGravidez= realizou_teste_de_gravidez;
-    updatedInfo.resultadoTesteGravidez= teste_de_gravidez_alterado;
-    updatedInfo.seSemTesteDeGravidezPorque=motivo_sem_teste_de_gravidez_paciente;
-
-    updatedInfo.qualAlteracaoInspecaoGenital= quais_alteracoes_no_resultado_inspecao_genital_paciente;
-   
-    updatedInfo.qualAlteracaoExameEspecular= quais_alteracoes_no_resultado_exame_especular_paciente;
-
-
-    setInfo(updatedInfo);
-
-    
-}
+            updatedInfo['alturacm'] = altura_paciente;
+            updatedInfo['pesokg'] = peso_paciente;
+            updatedInfo['imc'] = (Math.round(parseInt(peso_paciente)/(parseInt(altura_paciente)/100 * parseInt(altura_paciente)/100))).toString();
+            updatedInfo['realizouTesteGravidez'] = realizou_teste_de_gravidez;
+            updatedInfo['resultadoTesteGravidez'] = teste_de_gravidez_alterado;
+            updatedInfo['seSemTesteDeGravidezPorque'] = motivo_sem_teste_de_gravidez_paciente;
+            updatedInfo['qualAlteracaoInspecaoGenital'] = resultado_inspecao_genital_alterado;
+            updatedInfo['qualAlteracaoExameEspecular'] = resultado_exame_especular_alterado;
+         
+            
+            setInfo(updatedInfo);
+            setReady(true);
+  
+              
+          }
+          else
+          {
+              setBackdropShow(true);
+          }
+          
+      }
   return (
     
     <Box sx={{ display: 'flex', height: '100%',  flexDirection: 'column', p: 2 }}>
@@ -153,7 +184,7 @@ const handleTesteDeGravidezAlterado = (event: React.ChangeEvent<HTMLInputElement
 
                 <Grid item xs={12} sm={4}>
                     <Typography>IMC:</Typography>
-                    <Typography>{parseInt(peso_paciente)/(parseInt(altura_paciente)/100 * parseInt(altura_paciente)/100)}</Typography>
+                    <Typography>{Math.round(parseInt(peso_paciente)/(parseInt(altura_paciente)/100 * parseInt(altura_paciente)/100))}</Typography>
                 </Grid>
 
 
@@ -259,43 +290,33 @@ const handleTesteDeGravidezAlterado = (event: React.ChangeEvent<HTMLInputElement
 
             </Grid>
 
-
-                
-            
-            
-  
-      
-                
-            
-    <Grid item xs={12} sm={12}>
-        <Button type="submit" variant='contained' sx={{bgcolor: '#265D9B'}} onClick={() => {
-           /*  setOpen(true); */
-            updateInfofromForm();
-            setCurrentTab('4');
-            }}>
-            Próximo
+            <Grid item xs={12} sm={12}>
+        <Button variant='contained' sx={{bgcolor: '#265D9B'}} onClick={handleSend}>
+            Gravar
         </Button>
-
-        <Collapse in={open}>
-            <Alert
-            action={
-                <IconButton
-                aria-label="close"
-                color="inherit"
-                size="small"
-                onClick={() => {
-                    setOpen(false);
-                }}
-                >
-                <CloseIcon fontSize="inherit" />
-                </IconButton>
-            }
-            sx={{ mb: 2 }}
-            >
-            {JSON.stringify(info)}
-            </Alert>
-        </Collapse>
     </Grid>  
+            
+    <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={backdrop_show}
+        
+      >
+        <Paper elevation={3}  sx={{display: 'flex', bgcolor: 'white', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '40%', width: '40%'}}>
+            <Typography variant='h5' fontWeight={'bold'} sx={{margin:'20px'}}>Preencha os campos corretamente!</Typography>
+            <Button variant='contained' sx={{bgcolor: '#265D9B'}} size='large' onClick={() => {setBackdropShow(false)}}>Ok</Button>
+        </Paper>;
+      </Backdrop>
+
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={mustRegisterPersonalDataFirst}
+        
+      >
+        <Paper elevation={3}  sx={{display: 'flex', bgcolor: 'white', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '40%', width: '40%'}}>
+            <Typography variant='h5' fontWeight={'bold'} sx={{margin:'20px'}}>É necessário cadastrar os dados pessoais primeiro!</Typography>
+            <Button variant='contained' sx={{bgcolor: '#265D9B'}} size='large' onClick={() => {setMustRegisterPersonalDataFirst(false); goBackFirstTab('1')}}>Ok</Button>
+        </Paper>;
+      </Backdrop>
   
     </Box>
   );

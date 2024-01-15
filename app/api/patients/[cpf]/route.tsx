@@ -28,7 +28,7 @@ export async function GET(request: NextRequest,
 }
 
 
-export async function PUT(request: NextRequest,
+export async function PATCH(request: NextRequest,
     {params}: {params: {cpf: string}}) {
     
     // realiza o pedido e retorna um body
@@ -62,12 +62,17 @@ export async function PUT(request: NextRequest,
             );
     }
 
+
     const updatedPatient = await prisma.patient.update({
         where: {
             cpf: patient.cpf
         },
         data: body
     })
+
+    
+    console.log(updatedPatient);
+    
     return NextResponse.json(updatedPatient);
 }
 

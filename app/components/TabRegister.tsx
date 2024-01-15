@@ -55,8 +55,9 @@ export default function TabRegister({lookForCpf = '11111111111'}:{lookForCpf:str
   }
 
   const updatePatient = async (cpfSearched: string) => {
-    await axios.put('/api/patients/' + cpfSearched, myDictionary); 
-    router.push('/cadastroPaciente'); 
+    await axios.patch('/api/patients/' + cpfSearched, myDictionary); 
+    router.push('/cadastroPaciente');    
+    setContinueRegistrationScreen(true);  
 
   }
 
@@ -90,10 +91,12 @@ export default function TabRegister({lookForCpf = '11111111111'}:{lookForCpf:str
       if (myDictionary['cpf'] == '')
       {
         createPatient();
+        console.log('Create Request called:', myDictionary);
       }
       else
       {
         updatePatient(lookForCpf);
+        console.log('Update Request called:', myDictionary);
       }
       setAllowRequestDatabase(false);
     }
@@ -143,11 +146,11 @@ export default function TabRegister({lookForCpf = '11111111111'}:{lookForCpf:str
           </TabList>
         </Box>
         <TabPanel value="1"><PersonalDataForm info={myDictionary} setInfo={handleUpdateDictionary} setReady={setAllowRequestDatabase}/> </TabPanel>
-        <TabPanel value="2"> <HistoricalDataForm goBackFirstTab={setValue}  info={myDictionary} setInfo={handleUpdateDictionary}/></TabPanel>
-        <TabPanel value="3"><PhysicalExamForm currentTab={value} setCurrentTab={setValue}  info={myDictionary} setInfo={handleUpdateDictionary}/> </TabPanel>
-        <TabPanel value="4"><DiuInsertionForm currentTab={value} setCurrentTab={setValue}  info={myDictionary} setInfo={handleUpdateDictionary}/> </TabPanel>
-        <TabPanel value="5"><PostDiuInsertionForm  currentTab={value} setCurrentTab={setValue}  info={myDictionary} setInfo={handleUpdateDictionary}/> </TabPanel>
-        <TabPanel value="6"><DiuRemovalForm currentTab={value} setCurrentTab={setValue}  info={myDictionary} setInfo={handleUpdateDictionary}/> </TabPanel>
+        <TabPanel value="2"> <HistoricalDataForm goBackFirstTab={setValue}  info={myDictionary} setInfo={handleUpdateDictionary}  setReady={setAllowRequestDatabase}/></TabPanel>
+        <TabPanel value="3"><PhysicalExamForm goBackFirstTab={setValue}  info={myDictionary} setInfo={handleUpdateDictionary} setReady={setAllowRequestDatabase}/> </TabPanel>
+        <TabPanel value="4"><DiuInsertionForm  goBackFirstTab={setValue}  info={myDictionary} setInfo={handleUpdateDictionary}  setReady={setAllowRequestDatabase}/> </TabPanel>
+        <TabPanel value="5"><PostDiuInsertionForm   goBackFirstTab={setValue}  info={myDictionary} setInfo={handleUpdateDictionary}  setReady={setAllowRequestDatabase}/> </TabPanel>
+        <TabPanel value="6"><DiuRemovalForm  goBackFirstTab={setValue}  info={myDictionary} setInfo={handleUpdateDictionary}  setReady={setAllowRequestDatabase}/> </TabPanel>
       </TabContext>
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -157,7 +160,7 @@ export default function TabRegister({lookForCpf = '11111111111'}:{lookForCpf:str
       <Paper elevation={3}  sx={{display: 'flex', bgcolor: 'white', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '50%', width: '50%'}}>
                 <Grid container spacing={2} padding={2}>
                     <Grid item xs={12} sm={12}>
-                        <Typography variant='h5' fontWeight={'bold'} sx={{margin:'20px'}}>Cadastro criado. Deseja continuar com dados desta paciente?</Typography>
+                        <Typography variant='h5' fontWeight={'bold'} sx={{margin:'20px'}}>Registrado. Deseja continuar com dados desta paciente?</Typography>
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <Button variant='contained' sx={{bgcolor: '#265D9B'}} size='large' onClick={()=>{nextTab(value)}}>Sim</Button>

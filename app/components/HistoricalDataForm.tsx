@@ -20,7 +20,7 @@ import { string } from 'zod';
 
 
   
-function HistoricalDataForm ({goBackFirstTab, info, setInfo}:{goBackFirstTab: (inf: any) => void, info: any, setInfo: (inf: any) => void}) {
+function HistoricalDataForm ({goBackFirstTab, info, setInfo, setReady}:{goBackFirstTab: (inf: any) => void, info: any, setInfo: (inf: any) => void,  setReady: (inf: boolean) => void}) {
 
   // Use the spread operator to create a copy of the current dictionary
   const updatedInfo = { ...info };
@@ -278,34 +278,35 @@ const handleSend = () => {
         }
         else if(checkAllFieldsAreFine())
         {
- 
-          updatedInfo['gestacoesAnteriores'] = gestacoes_anteriores_paciente;
+
+          updatedInfo['gestacaoAnteriores'] = gestacoes_anteriores_paciente;
           updatedInfo['partosNormaisAnteriores'] = partos_normais_anteriores_paciente;
           updatedInfo['partosCesarianasAnteriores'] = partos_cesarianas_anteriores_paciente;
           updatedInfo['abortosAnteriores'] = abortos_anteriores_paciente;
-          updatedInfo['dataUltimaGestacao'] = data_ultima_gestacao_paciente.format('YYYY/MM/DD');
-          updatedInfo['dataUltimaMenstruacao'] = data_ultima_menstruacao_paciente.format('YYYY/MM/DD');
+          updatedInfo['dataUltimaGestacao'] = data_ultima_gestacao_paciente;
+          updatedInfo['dataUltimaMenstruacao'] = data_ultima_menstruacao_paciente;
           updatedInfo['diasMenstruada'] = quantidade_dias_menstruada_paciente;
           updatedInfo['intervaloEntreCiclosMenstruais'] = intervalo_entre_ciclos_menstruais_paciente;
           updatedInfo['volumeMenstrual'] = volume_menstrual_paciente;
           updatedInfo['colicas'] = colicas_paciente;
-          updatedInfo['contraceptivosAnteriores'] = metodos_anticonceptivos_anteriores.toString();
-          updatedInfo['contraceptivosAtuais'] = metodos_anticonceptivos_atuais.toString();
+          updatedInfo['contraceptivosAnteriores'] = metodos_anticonceptivos_anteriores;
+          updatedInfo['contraceptivosAtuais'] = metodos_anticonceptivos_atuais;
           updatedInfo['ultimoPreventivoAlterado'] = preventivoAlterado;
-          updatedInfo['dataUltimoPreventivo'] = data_ultimo_preventivo_paciente.format('YYYY/MM/DD');
+          updatedInfo['dataUltimoPreventivo'] = data_ultimo_preventivo_paciente;
           updatedInfo['possuiQualIst'] = qual_ist_paciente;
           updatedInfo['fezQualCirurgiaPelvicaUterina'] = qual_cirurgia_paciente;
           updatedInfo['problemasSaude'] = problemas_saude_paciente;
           updatedInfo['medicacaoEmUso'] = medicacoes_em_uso_paciente;
-          updatedInfo['alergiaCobreMedicamento'] = alergia_cobre_medicamento_paciente
-          updatedInfo['fezQualExameAlteracaoUtero'] = qual_exame_alteracao_de_utero_paciente;
+          updatedInfo['alergiaCobreMedicamento'] = alergia_cobre_medicamento_paciente;
+          updatedInfo['fezQualExameAlteracaoUtero'] = exame_detectou_alteracao_utero;
           updatedInfo['examesAnteriores'] = exames_anteriores_paciente;
           updatedInfo['porqueInserirDIU'] = porque_inserir_diu_paciente;
           updatedInfo['duvidasSobreInsercaoDIU'] = quais_duvidas_sobre_insercao_diu_paciente;
-          updatedInfo['possuiTermoConsentimento'] = termo_consentimento_enviado;
-      
+          updatedInfo['termoConsentimentoEnviado'] = termo_consentimento_enviado;
+
       
           setInfo(updatedInfo);
+          setReady(true);
 
             
         }

@@ -5,7 +5,7 @@ import Button from '@mui/material/Button'
 import MenuItem from '@mui/material/MenuItem';
 
 import InputAdornment from '@mui/material/InputAdornment';
-import { Box, Grid, InputLabel, Select, Slider, Stack, Switch, Typography, Checkbox, RadioGroup, FormControlLabel, Radio, Collapse, Alert, IconButton } from '@mui/material';
+import { Box, Grid, InputLabel, Select, Slider, Stack, Switch, Typography, Checkbox, RadioGroup, FormControlLabel, Radio, Collapse, Alert, IconButton, Backdrop, Paper } from '@mui/material';
 import { bool, number } from 'yup';
 
 import CloseIcon from '@mui/icons-material/Close';
@@ -16,26 +16,30 @@ import dayjs from 'dayjs';
 
 
 
-function DiuInsertionForm ({currentTab, setCurrentTab, info, setInfo}:{currentTab: string, setCurrentTab: (tab: string) => void, info: any, setInfo: (inf: any) => void}) {
-
-  const [data_insercao_paciente, setDataInsercaoPaciente] = useState(info.dataInsercao);
-  const [motivo_diu_nao_inserido_paciente, setMotivoDiuNaoInseridoPaciente] = useState(info.seDiuNaoInseridoPorque);
-  const [antissepsia_realizada_com_paciente, setAntissepsiaRealizadaComPaciente] = useState(info.antissepsiaRealizadaCom);
-  const [histerometria_paciente, setHisterometriaPaciente] = useState(info.histerometria);
-  const [tamanho_fio_paciente, setTamanhoFioPaciente] = useState(info.tamanhoFio);
-  const [modelo_diu_paciente, setModeloDiuPaciente] = useState(info.modeloDiu);
-  const [lote_diu_paciente, setLoteDiuPaciente] = useState(info.loteDiu);
-  const [intercorrencias_diu_paciente, setIntercorrenciasDiuPaciente] = useState(info.intercorrenciasDiu);
-  const [nivel_dor_paciente, setNivelDorPaciente] = useState(info.nivelDor);
-  const [profissional_inseriu_nome_paciente, setProfissionalInseriuNomePaciente] = useState(info.profissionalInseriuNome);
-  const [profissional_inseriu_crm_coren_paciente, setProfissionalInseriuCrmCorenPaciente] = useState(info.profissionalInseriuCRMCoren);
-  const [centro_saude_insercao_paciente, setCentroSaudeInsercaoPaciente] = useState(info.centroSaudeInsercao);
-
-  const [profissional_auxiliar_nome_paciente, setProfissionalAuxiliarNomePaciente] = useState(info.profissionalAuxiliarNome);
-  const [profissional_auxiliar_crm_coren_paciente, setProfissionalAuxiliarCrmCorenPaciente] = useState(info.profissionalAuxiliarCRMCoren);
+function DiuInsertionForm ({goBackFirstTab, info, setInfo, setReady}:{goBackFirstTab: (inf: string) => void, info: any, setInfo: (inf: any) => void,  setReady: (inf: boolean) => void}) {
+  
+  // Use the spread operator to create a copy of the current dictionary
+  const updatedInfo = { ...info };
 
 
-  const [diu_foi_inserido, set_diu_foi_inserido] = useState(info.diuInserido);
+  const [data_insercao_paciente, setDataInsercaoPaciente] = useState(info['dataInsercao']);
+  const [motivo_diu_nao_inserido_paciente, setMotivoDiuNaoInseridoPaciente] = useState(info['seDiuNaoInseridoPorque']);
+  const [antissepsia_realizada_com_paciente, setAntissepsiaRealizadaComPaciente] = useState(info['antissepsiaRealizadaCom']);
+  const [histerometria_paciente, setHisterometriaPaciente] = useState(info['histerometriaCm']);
+  const [tamanho_fio_paciente, setTamanhoFioPaciente] = useState(info['tamanhoFioCm']);
+  const [modelo_diu_paciente, setModeloDiuPaciente] = useState(info['modeloDiu']);
+  const [lote_diu_paciente, setLoteDiuPaciente] = useState(info['loteDiu']);
+  const [intercorrencias_diu_paciente, setIntercorrenciasDiuPaciente] = useState(info['intercorrenciasDiu']);
+  const [nivel_dor_paciente, setNivelDorPaciente] = useState(info['nivelDor']);
+  const [profissional_inseriu_nome_paciente, setProfissionalInseriuNomePaciente] = useState(info['profissionalInseriuNome']);
+  const [profissional_inseriu_crm_coren_paciente, setProfissionalInseriuCrmCorenPaciente] = useState(info['profissionalInseriuCRMCoren']);
+  const [centro_saude_insercao_paciente, setCentroSaudeInsercaoPaciente] = useState(info['centroSaudeInsercao']);
+
+  const [profissional_auxiliar_nome_paciente, setProfissionalAuxiliarNomePaciente] = useState(info['profissionalAuxiliarNome']);
+  const [profissional_auxiliar_crm_coren_paciente, setProfissionalAuxiliarCrmCorenPaciente] = useState(info['profissionalAuxiliarCRMCoren']);
+
+
+  const [diu_foi_inserido, set_diu_foi_inserido] = useState(info['diuInserido']);
   const [disable_motivo_diu_nao_inserido, set_disable_motivo_diu_nao_inserido] = useState(false);
 
   const handleDiuFoiInserido = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,14 +57,14 @@ function DiuInsertionForm ({currentTab, setCurrentTab, info, setInfo}:{currentTa
   };
 
 
-  const [fez_uso_previo_aine, set_fez_uso_previo_aine] = useState(info.usoPrevioAINE);
+  const [fez_uso_previo_aine, set_fez_uso_previo_aine] = useState(info['usoPrevioAINE']);
 
   const handleFezUsoPrevioAine = (event: React.ChangeEvent<HTMLInputElement>) => {
     set_fez_uso_previo_aine((event.target as HTMLInputElement).value);
   };
 
 
-  const [uso_de_segundo_profissional, set_uso_de_segundo_profissional] = useState(info.auxilioSegundoProfissional);
+  const [uso_de_segundo_profissional, set_uso_de_segundo_profissional] = useState(info['auxilioSegundoProfissional']);
   const [disable_segundo_profissional, set_disable_segundo_profissional] = useState(false);
   const handleUsoDeSegundoProfissional = (event: React.ChangeEvent<HTMLInputElement>) => {
     set_uso_de_segundo_profissional((event.target as HTMLInputElement).value);
@@ -78,33 +82,86 @@ function DiuInsertionForm ({currentTab, setCurrentTab, info, setInfo}:{currentTa
 
 
 
-  const updateInfofromForm = () => {
-    // Use the spread operator to create a copy of the current dictionary
-    const updatedInfo = { ...info };
-
-    // Update or add a new key-value pair
-    updatedInfo.dataInsercao= data_insercao_paciente;
-    updatedInfo.diuInserido= diu_foi_inserido;
-    updatedInfo.seDiuNaoInseridoPorque= motivo_diu_nao_inserido_paciente;
-    updatedInfo.usoPrevioAINE= fez_uso_previo_aine;
-    updatedInfo.antissepsiaRealizadaCom= antissepsia_realizada_com_paciente;
-    updatedInfo.histerometria= histerometria_paciente;
-    updatedInfo.tamanhoFio= tamanho_fio_paciente;
-    updatedInfo.modeloDiu= modelo_diu_paciente;
-    updatedInfo.loteDiu= lote_diu_paciente;
-    updatedInfo.intercorrenciasDiu= intercorrencias_diu_paciente;
-    updatedInfo.nivelDor= nivel_dor_paciente.toString();
-    updatedInfo.profissionalInseriuNome= profissional_inseriu_nome_paciente;
-    updatedInfo.profissionalInseriuCRMCoren= profissional_inseriu_crm_coren_paciente;
-    updatedInfo.centroSaudeInsercao= centro_saude_insercao_paciente;
-    updatedInfo.auxilioSegundoProfissional= uso_de_segundo_profissional;
-    updatedInfo.profissionalAuxiliarNome= profissional_auxiliar_nome_paciente;
-    updatedInfo.profissionalAuxiliarCRMCoren= profissional_auxiliar_crm_coren_paciente;
-
-    setInfo(updatedInfo);
-
-    
-}
+const [backdrop_show, setBackdropShow] = useState(false);
+  const [mustRegisterPersonalDataFirst, setMustRegisterPersonalDataFirst] = useState(false);
+  
+  const checkAllFieldsAreFine = () => {
+  
+      if ((/^\d+$/.test(histerometria_paciente) == false) || (histerometria_paciente.length >= 3))
+      {
+          return false; 
+      }
+      else if ((/^\d+$/.test(tamanho_fio_paciente) == false) || (tamanho_fio_paciente.length >= 3))
+      {
+          return false; 
+      }
+      else if (lote_diu_paciente == '' || lote_diu_paciente == undefined || lote_diu_paciente == null)
+      {
+          return false;
+      }
+      else if ((/^\d+$/.test(nivel_dor_paciente) == false) || (nivel_dor_paciente.length >= 3))
+      {
+          return false; 
+      }
+      else if (profissional_inseriu_nome_paciente == '' || profissional_inseriu_nome_paciente == undefined || profissional_inseriu_nome_paciente == null)
+      {
+          return false;
+      }
+      else if (profissional_inseriu_crm_coren_paciente == '' || profissional_inseriu_crm_coren_paciente == undefined || profissional_inseriu_crm_coren_paciente == null)
+      {
+          return false;
+      }
+      else if (centro_saude_insercao_paciente == '' || centro_saude_insercao_paciente == undefined || centro_saude_insercao_paciente == null)
+      {
+          return false;
+      }
+      else
+      {
+          return true;
+      }
+  }
+  
+  
+  const handleSend = () => {
+          if(info['cpf'] == '')
+          {
+              // Tem que cadastrar o paciente primeiro
+              // Sobe Backdrop informando isso
+              setMustRegisterPersonalDataFirst(true);
+              // Botão de retornar que irá baixar o popup e voltar para tela de cadastro
+          }
+          else if(checkAllFieldsAreFine())
+          {
+            // const [modelo_diu_paciente, setModeloDiuPaciente] = useState(info['modeloDiu']);
+            updatedInfo['dataInsercao'] = data_insercao_paciente;
+            updatedInfo['diuInserido'] = diu_foi_inserido;
+            updatedInfo['seDiuNaoInseridoPorque'] = motivo_diu_nao_inserido_paciente;
+            updatedInfo['usoPrevioAINE'] = fez_uso_previo_aine;
+            updatedInfo['antissepsiaRealizadaCom'] = antissepsia_realizada_com_paciente;
+            updatedInfo['histerometriaCm'] = histerometria_paciente;
+            updatedInfo['tamanhoFioCm'] = tamanho_fio_paciente;
+            updatedInfo['modeloDiu'] = modelo_diu_paciente;
+            updatedInfo['loteDiu'] = lote_diu_paciente;
+            updatedInfo['intercorrenciasDiu'] = intercorrencias_diu_paciente;
+            updatedInfo['nivelDor'] = nivel_dor_paciente.toString();
+            updatedInfo['profissionalInseriuNome'] = profissional_inseriu_nome_paciente;
+            updatedInfo['profissionalInseriuCRMCoren'] = profissional_inseriu_crm_coren_paciente;
+            updatedInfo['centroSaudeInsercao'] = centro_saude_insercao_paciente;
+            updatedInfo['auxilioSegundoProfissional'] = uso_de_segundo_profissional;
+            updatedInfo['profissionalAuxiliarNome'] = profissional_auxiliar_nome_paciente;
+            updatedInfo['profissionalAuxiliarCRMCoren'] = profissional_auxiliar_crm_coren_paciente;
+        
+            setInfo(updatedInfo);
+            setReady(true);
+  
+              
+          }
+          else
+          {
+              setBackdropShow(true);
+          }
+          
+      }
 
 
   return (
@@ -123,7 +180,7 @@ function DiuInsertionForm ({currentTab, setCurrentTab, info, setInfo}:{currentTa
                         }
                             } value={dayjs(data_insercao_paciente)}
                             
-                            format="YYYY-MM-DD" label="Data de acompanhamento"/>
+                            format="DD/MM/YYYY" label="Data de acompanhamento"/>
                     </LocalizationProvider>
                 </Grid>
                 
@@ -400,34 +457,32 @@ function DiuInsertionForm ({currentTab, setCurrentTab, info, setInfo}:{currentTa
                 </Grid>    
             
     <Grid item xs={12} sm={12}>
-        <Button type="submit" variant='contained' sx={{bgcolor: '#265D9B'}} onClick={() => {
-            // setOpen(true);
-            updateInfofromForm();
-            setCurrentTab('4');
-            }}>
-            Próximo
+        <Button variant='contained' sx={{bgcolor: '#265D9B'}} onClick={handleSend}>
+            Gravar
         </Button>
+    </Grid> 
+  
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={backdrop_show}
+        
+      >
+        <Paper elevation={3}  sx={{display: 'flex', bgcolor: 'white', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '40%', width: '40%'}}>
+            <Typography variant='h5' fontWeight={'bold'} sx={{margin:'20px'}}>Preencha os campos corretamente!</Typography>
+            <Button variant='contained' sx={{bgcolor: '#265D9B'}} size='large' onClick={() => {setBackdropShow(false)}}>Ok</Button>
+        </Paper>;
+      </Backdrop>
 
-        <Collapse in={open}>
-            <Alert
-            action={
-                <IconButton
-                aria-label="close"
-                color="inherit"
-                size="small"
-                onClick={() => {
-                    setOpen(false);
-                }}
-                >
-                <CloseIcon fontSize="inherit" />
-                </IconButton>
-            }
-            sx={{ mb: 2 }}
-            >
-            {JSON.stringify(info)}
-            </Alert>
-        </Collapse>
-    </Grid>  
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={mustRegisterPersonalDataFirst}
+        
+      >
+        <Paper elevation={3}  sx={{display: 'flex', bgcolor: 'white', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '40%', width: '40%'}}>
+            <Typography variant='h5' fontWeight={'bold'} sx={{margin:'20px'}}>É necessário cadastrar os dados pessoais primeiro!</Typography>
+            <Button variant='contained' sx={{bgcolor: '#265D9B'}} size='large' onClick={() => {setMustRegisterPersonalDataFirst(false); goBackFirstTab('1')}}>Ok</Button>
+        </Paper>;
+      </Backdrop>
   
     </Box>
   );

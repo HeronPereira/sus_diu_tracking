@@ -4,7 +4,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button'
 import MenuItem from '@mui/material/MenuItem';
 
-import { Box, Grid, InputLabel, Rating, Select, Slider, Stack, Checkbox, Typography, FormControl, SelectChangeEvent, Chip, RadioGroup, FormControlLabel, Radio, Collapse, Alert, IconButton } from '@mui/material';
+import { Box, Grid, InputLabel, Rating, Select, Slider, Stack, Checkbox, Typography, FormControl, SelectChangeEvent, Chip, RadioGroup, FormControlLabel, Radio, Collapse, Alert, IconButton, Paper, Backdrop } from '@mui/material';
 import { bool, number } from 'yup';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -13,21 +13,24 @@ import CloseIcon from '@mui/icons-material/Close';
 import dayjs, { Dayjs } from 'dayjs';
 
 
-function PostDiuInsertionForm ({currentTab, setCurrentTab, info, setInfo}:{currentTab: string, setCurrentTab: (tab: string) => void, info: any, setInfo: (inf: any) => void}) {
+function PostDiuInsertionForm ({goBackFirstTab, info, setInfo, setReady}:{goBackFirstTab: (inf: string) => void, info: any, setInfo: (inf: any) => void,  setReady: (inf: boolean) => void}) {
 
-  const [data_acompanhamento_paciente, setDataAcompanhamentoPaciente] = useState(info.dataAcompanhamento);
-  const [dias_sangramento_pos_insercao_paciente, setDiasSangramentoPosInsercaoPaciente] = useState(info.diasSangramentoPosInsercao);
+  // Use the spread operator to create a copy of the current dictionary
+  const updatedInfo = { ...info };
 
- 
+  const [data_acompanhamento_paciente, setDataAcompanhamentoPaciente] = useState(info['dataAcompanhamento']);
+  const [dias_sangramento_pos_insercao_paciente, setDiasSangramentoPosInsercaoPaciente] = useState(info['diasSangramentoPosInsercao']);
 
-  const [data_ultima_menstruacao_pos_insercao_paciente, setDataUltimaMenstruacaoPosInsercaoPaciente] = useState(info.dataUltimaMenstruacaoPosInsercao);
-  const [dias_mestruada_pos_insercao_paciente, setDiasMestruadaPosInsercaoPaciente] = useState(info.diasMenstruadaPosInsercao);
-  const [intervalo_ciclos_mestruais_pos_insercao_paciente, setIntervaloCiclosMestruaisPosInsercaoPaciente] = useState(info.intervaloDiasUltimoCicloPosInsercao);
-  const [volume_menstrual_pos_insercao_paciente, setVolumeMenstrualPosInsercaoPaciente] = useState(info.volumeMenstrualPosInsercao);
-  const [colicas_pos_insercao_paciente, setColicasPosInsercaoPaciente] = useState(info.colicasPosInsercao);
-  const [tamanho_do_fio_pos_insercao_paciente, setTamanhoDoFioPosInsercaoPaciente] = useState(info.tamanhoFioCmPosInsercao);
-  const [resultado_usg_pos_insercao_paciente, setResultadoUsgPosInsercaoPaciente] = useState(info.resultadoUSG);
-  const [intercorrencias_alertadas_pos_insercao_paciente, setIntercoorrenciasAlertadasPosInsercaoPaciente] = useState(info.qualOutraIntercorrenciaPosInsercao);
+
+
+  const [data_ultima_menstruacao_pos_insercao_paciente, setDataUltimaMenstruacaoPosInsercaoPaciente] = useState(info['dataUltimaMenstruacaoPosInsercao']);
+  const [dias_mestruada_pos_insercao_paciente, setDiasMestruadaPosInsercaoPaciente] = useState(info['diasMenstruadaPosInsercao']);
+  const [intervalo_ciclos_mestruais_pos_insercao_paciente, setIntervaloCiclosMestruaisPosInsercaoPaciente] = useState(info['intervaloDiasUltimoCicloPosInsercao']);
+  const [volume_menstrual_pos_insercao_paciente, setVolumeMenstrualPosInsercaoPaciente] = useState(info['volumeMenstrualPosInsercao']);
+  const [colicas_pos_insercao_paciente, setColicasPosInsercaoPaciente] = useState(info['colicasPosInsercao']);
+  const [tamanho_do_fio_pos_insercao_paciente, setTamanhoDoFioPosInsercaoPaciente] = useState(info['tamanhoFioCmPosInsercao']);
+  const [resultado_usg_pos_insercao_paciente, setResultadoUsgPosInsercaoPaciente] = useState(info['resultadoUSG']);
+  const [intercorrencias_alertadas_pos_insercao_paciente, setIntercoorrenciasAlertadasPosInsercaoPaciente] = useState(info['qualOutraIntercorrenciaPosInsercao']);
 
   const labels: { [index: string]: string } = {
     1: 'Muito Insatisfeita',
@@ -42,7 +45,7 @@ function PostDiuInsertionForm ({currentTab, setCurrentTab, info, setInfo}:{curre
     return `${value} Star${value !== 1 ? 's' : ''}, ${labels[value]}`;
   }
   
-  const [nivel_de_satisfacao_paciente, setNivelDeSatisfacaoPaciente] = useState(info.nivelSatisfacaoInsercao);
+  const [nivel_de_satisfacao_paciente, setNivelDeSatisfacaoPaciente] = useState(info['nivelSatisfacaoInsercao']);
     const [nivel_numerico, setNivelNumerico] = React.useState<number | null>(0);
     const [hover, setHover] = React.useState(-1);
 
@@ -59,7 +62,7 @@ function PostDiuInsertionForm ({currentTab, setCurrentTab, info, setInfo}:{curre
   
   
   
-    const [intercorrencias_selecionadas, set_intercorrencias_selecionadas] = React.useState<string[]>([info.intercorrenciasComunicadasPosInsercao]);
+    const [intercorrencias_selecionadas, set_intercorrencias_selecionadas] = React.useState<string[]>([info['intercorrenciasComunicadasPosInsercao']]);
   
     const handle_intercorrencias = (event: SelectChangeEvent<typeof intercorrencias_selecionadas>) => {
       const {
@@ -89,32 +92,72 @@ function PostDiuInsertionForm ({currentTab, setCurrentTab, info, setInfo}:{curre
   };
     
   
-  const [open, setOpen] = React.useState(false);
+ 
 
-  const updateInfofromForm = () => {
-    // Use the spread operator to create a copy of the current dictionary
-    const updatedInfo = { ...info };
+const [backdrop_show, setBackdropShow] = useState(false);
+const [mustRegisterPersonalDataFirst, setMustRegisterPersonalDataFirst] = useState(false);
 
-    // Update or add a new key-value pair
-    updatedInfo.dataAcompanhamento= data_acompanhamento_paciente.format('YYYY/MM/DD');
-    updatedInfo.diasSangramentoPosInsercao= dias_sangramento_pos_insercao_paciente;
-    updatedInfo.nivelSatisfacaoInsercao= nivel_de_satisfacao_paciente;
-    updatedInfo.dataUltimaMenstruacaoPosInsercao= data_ultima_menstruacao_pos_insercao_paciente.format('YYYY/MM/DD');
-    updatedInfo.diasMenstruadaPosInsercao= dias_mestruada_pos_insercao_paciente;
-    updatedInfo.intervaloDiasUltimoCicloPosInsercao= intervalo_ciclos_mestruais_pos_insercao_paciente;
-    updatedInfo.volumeMenstrualPosInsercao= volume_menstrual_pos_insercao_paciente;
-    updatedInfo.colicasPosInsercao= colicas_pos_insercao_paciente;
-    updatedInfo.tamanhoFioCmPosInsercao= tamanho_do_fio_pos_insercao_paciente;
-    updatedInfo.resultadoUSG= resultado_usg_pos_insercao_paciente;
-    updatedInfo.intercorrenciasComunicadasPosInsercao= intercorrencias_selecionadas.toString();
-    updatedInfo.qualOutraIntercorrenciaPosInsercao= intercorrencias_alertadas_pos_insercao_paciente;
+const checkAllFieldsAreFine = () => {
 
-    setInfo(updatedInfo);
-
-    
+    if (data_acompanhamento_paciente == '' || data_acompanhamento_paciente == undefined || data_acompanhamento_paciente == null)
+    {
+        return false;
+    }
+    else if ((/^\d+$/.test(dias_sangramento_pos_insercao_paciente) == false) || (dias_sangramento_pos_insercao_paciente.length > 3))
+    {
+        return false; 
+    }
+    else if (nivel_de_satisfacao_paciente == '' || nivel_de_satisfacao_paciente == undefined || nivel_de_satisfacao_paciente == null)
+    {
+        return false; 
+    }
+    else if (colicas_pos_insercao_paciente == '' || colicas_pos_insercao_paciente == undefined || colicas_pos_insercao_paciente == null)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
 }
 
 
+const handleSend = () => {
+        if(info['cpf'] == '')
+        {
+            // Tem que cadastrar o paciente primeiro
+            // Sobe Backdrop informando isso
+            setMustRegisterPersonalDataFirst(true);
+            // Botão de retornar que irá baixar o popup e voltar para tela de cadastro
+        }
+        else if(checkAllFieldsAreFine())
+        {
+
+          updatedInfo['dataAcompanhamento'] = data_acompanhamento_paciente;
+          updatedInfo['diasSangramentoPosInsercao'] = dias_sangramento_pos_insercao_paciente;
+          updatedInfo['nivelSatisfacaoInsercao'] = nivel_de_satisfacao_paciente;
+          updatedInfo['dataUltimaMenstruacaoPosInsercao'] = data_ultima_menstruacao_pos_insercao_paciente;
+          updatedInfo['diasMenstruadaPosInsercao'] = dias_mestruada_pos_insercao_paciente;
+          updatedInfo['intervaloDiasUltimoCicloPosInsercao'] = intervalo_ciclos_mestruais_pos_insercao_paciente;
+          updatedInfo['volumeMenstrualPosInsercao'] = volume_menstrual_pos_insercao_paciente;
+          updatedInfo['colicasPosInsercao'] = colicas_pos_insercao_paciente;
+          updatedInfo['tamanhoFioCmPosInsercao'] = tamanho_do_fio_pos_insercao_paciente;
+          updatedInfo['resultadoUSG'] = feito_uso_de_usg;
+          updatedInfo['intercorrenciasComunicadasPosInsercao'] = intercorrencias_selecionadas.toString();
+          updatedInfo['qualOutraIntercorrenciaPosInsercao'] = intercorrencias_alertadas_pos_insercao_paciente;
+
+          
+          setInfo(updatedInfo);
+          setReady(true);
+
+            
+        }
+        else
+        {
+            setBackdropShow(true);
+        }
+        
+    }
   return (
     <Box sx={{ display: 'flex', height: '100vh',  flexDirection: 'column', p: 2 }}>
 
@@ -144,7 +187,8 @@ function PostDiuInsertionForm ({currentTab, setCurrentTab, info, setInfo}:{curre
                             margin="normal"
                             name="nome"
                             value={dias_sangramento_pos_insercao_paciente}
-                            onChange={(event)=>{const onlyContainsNumbers = /^\d+$/.test(event.target.value); if((onlyContainsNumbers || event.target.value === '')&& event.target.value.length <= 2){setDiasSangramentoPosInsercaoPaciente(event.target.value)}}}
+                          
+                            onChange={(event)=>{const onlyContainsNumbers = /^\d+$/.test(event.target.value); if((onlyContainsNumbers || event.target.value === '') && event.target.value.length <= 2){setDiasSangramentoPosInsercaoPaciente(event.target.value)}}}
                             fullWidth
                             />
                 </Grid>
@@ -328,38 +372,34 @@ function PostDiuInsertionForm ({currentTab, setCurrentTab, info, setInfo}:{curre
                
             </Grid>
 
-
-             
-                
-            
-    <Grid item xs={12} sm={12}>
-        <Button type="submit" variant='contained' sx={{bgcolor: '#265D9B'}} onClick={() => {
-            setOpen(true);
-            updateInfofromForm();
-            }}>
+            <Grid item xs={12} sm={12}>
+        <Button variant='contained' sx={{bgcolor: '#265D9B'}} onClick={handleSend}>
             Gravar
         </Button>
-
-        <Collapse in={open}>
-            <Alert
-            action={
-                <IconButton
-                aria-label="close"
-                color="inherit"
-                size="small"
-                onClick={() => {
-                    setOpen(false);
-                }}
-                >
-                <CloseIcon fontSize="inherit" />
-                </IconButton>
-            }
-            sx={{ mb: 2 }}
-            >
-            {JSON.stringify(info)}
-            </Alert>
-        </Collapse>
     </Grid>  
+            
+    <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={backdrop_show}
+        
+      >
+        <Paper elevation={3}  sx={{display: 'flex', bgcolor: 'white', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '40%', width: '40%'}}>
+            <Typography variant='h5' fontWeight={'bold'} sx={{margin:'20px'}}>Preencha os campos corretamente!</Typography>
+            <Button variant='contained' sx={{bgcolor: '#265D9B'}} size='large' onClick={() => {setBackdropShow(false)}}>Ok</Button>
+        </Paper>;
+      </Backdrop>
+
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={mustRegisterPersonalDataFirst}
+        
+      >
+        <Paper elevation={3}  sx={{display: 'flex', bgcolor: 'white', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '40%', width: '40%'}}>
+            <Typography variant='h5' fontWeight={'bold'} sx={{margin:'20px'}}>É necessário cadastrar os dados pessoais primeiro!</Typography>
+            <Button variant='contained' sx={{bgcolor: '#265D9B'}} size='large' onClick={() => {setMustRegisterPersonalDataFirst(false); goBackFirstTab('1')}}>Ok</Button>
+        </Paper>;
+      </Backdrop>
+
   
     </Box>
   );
