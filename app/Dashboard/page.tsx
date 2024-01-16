@@ -184,9 +184,7 @@ const getAge = (date: dayjs.Dayjs) => {
 /* ------------------------------------------------------------------------------------------------------------------- */
 export default function Dashboard() {
 
-  const testStuff = () => {
-  
-  }
+ 
   const router = useRouter();
   const age = dayjs();
   const [databaseRows, setDatabaseRows] = React.useState<typeof defaultDictionary[]>([]);
@@ -469,10 +467,7 @@ export default function Dashboard() {
        
           
             <Box sx={{ height: '100%', width: '85%', display: 'flex', flexDirection: 'column', padding: '8px', alignSelf: 'end'}}>
-    {/* ---------------------------------------------------------------------------------------------------------------------------- */}          
-              <Button onClick={updateChart4Data}>Teste</Button>
-    {/* ---------------------------------------------------------------------------------------------------------------------------- */}
-             
+    
               <Box sx={{ height: '100%', width: '100%', padding: '8px', display: 'flex', flexDirection: 'row'}}>
                 <Box sx={{ height: '100%', width: '50%',  padding: '4px'}}>
                     <Chart
