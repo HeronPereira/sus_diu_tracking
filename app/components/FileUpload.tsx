@@ -6,7 +6,7 @@ import { getStorage, ref, uploadBytes } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid'; // Import the uuid function
 import app from '../utils/firebase';
 
-const FileUpload = () => {
+const FileUpload = ({setUploadedFileId, text}:{setUploadedFileId: (inf: any)=>void, text: string}) => {
   app; // Initialize Firebase app (ensure it's initialized)
   const storage = getStorage();
 
@@ -21,7 +21,7 @@ const FileUpload = () => {
     try {
       await uploadBytes(storageRef, file);
       console.log("File uploaded successfully!");
-
+      setUploadedFileId(fileId);
       // Now you can use the fileId for further actions (e.g., store it in a database)
       console.log("FileId:", fileId);
     } catch (error) {
@@ -34,7 +34,7 @@ const FileUpload = () => {
   return (
     <div {...getRootProps()}>
       <input {...getInputProps()} />
-      <p>Clique ou arraste aqui o termo de consentimento</p>
+      <p>{text}</p>
     </div>
   );
 };

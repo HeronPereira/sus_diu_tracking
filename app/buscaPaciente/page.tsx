@@ -13,8 +13,6 @@ export default function BuscaPaciente() {
           <Grid item xs={12} sm={2}>
           <Navbar/>
           </Grid>
-          <FileUpload/>
-          <FileDownload fileId="8f10dacb-2753-4237-8bfa-cd40916ac4e7" />
 
           <Grid item xs={12} sm={10}>
             <SearchTable/>

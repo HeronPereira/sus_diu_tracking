@@ -17,6 +17,9 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import CloseIcon from '@mui/icons-material/Close';
 import dayjs, { Dayjs } from 'dayjs';
 import { string } from 'zod';
+import { UploadFile } from '@mui/icons-material';
+import FileUpload from './FileUpload';
+import DoneIcon from '@mui/icons-material/Done';
 
 
   
@@ -53,6 +56,9 @@ function HistoricalDataForm ({goBackFirstTab, info, setInfo, setReady}:{goBackFi
   const [porque_inserir_diu_paciente, setPorqueInserirDiuPaciente] = useState(info['porqueInserirDIU']);
 
   const [quais_duvidas_sobre_insercao_diu_paciente, setQuaisDuvidasSobreInsercaoDiuPaciente] = useState(info['duvidasSobreInsercaoDIU']);
+
+  
+
 
 
   
@@ -112,6 +118,7 @@ function HistoricalDataForm ({goBackFirstTab, info, setInfo, setReady}:{goBackFi
 
   const [ist_positivo_paciente, setIstPositivoPaciente] = React.useState('');
   const [disable_ist_description, setDisableIstDescription] = React.useState(false);
+
 
   const handleIstPositivo = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIstPositivoPaciente((event.target as HTMLInputElement).value);
@@ -186,17 +193,31 @@ function HistoricalDataForm ({goBackFirstTab, info, setInfo, setReady}:{goBackFi
 
   
 
-  const [termo_consentimento_enviado, setTermoConsentimentoEnviado] = React.useState(info['possuiTermoConsentimento']);
-
-  const handleTermoConsentimentoEnviado = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTermoConsentimentoEnviado(event.target.checked);
-
-  };
+const [termo_consentimento_enviado, setTermoConsentimentoEnviado] = React.useState(info['possuiTermoConsentimento']);
+const [checkTermSent, setCheckTermSent] = useState(false);
 
 
 
 const [backdrop_show, setBackdropShow] = useState(false);
 const [mustRegisterPersonalDataFirst, setMustRegisterPersonalDataFirst] = useState(false);
+
+const handleTermoConsentimentoEnviado = (idTermoConsentimentoEnviado : string) =>
+{
+  setTermoConsentimentoEnviado(idTermoConsentimentoEnviado);
+
+  if (idTermoConsentimentoEnviado == '' || idTermoConsentimentoEnviado == undefined || idTermoConsentimentoEnviado == null)
+  {
+    setCheckTermSent(false);
+  }
+  else
+  {
+    setCheckTermSent(true);
+  }
+  
+  console.log('Log idTermoConsentimentoEnviado: ' + idTermoConsentimentoEnviado);
+  console.log('Log checkTermSent: ' , checkTermSent);
+}
+
 
 const checkAllFieldsAreFine = () => {
 
@@ -238,7 +259,7 @@ const checkAllFieldsAreFine = () => {
     {
         return false;
     }
-    else if(termo_consentimento_enviado == false)
+    else if (termo_consentimento_enviado == '' || termo_consentimento_enviado == undefined || termo_consentimento_enviado == null)
     {
         return false;
     }
@@ -710,20 +731,17 @@ const handleSend = () => {
 
                 <Grid item xs={12} sm={12}>
                 <InputLabel id="demo-simple-select-label">Assinou o Termo de Consentimento Livre e Esclarecido?*</InputLabel>
-                    <Stack direction={'row'} spacing={2} alignItems={'center'}>
-                    <Checkbox
-                            checked={termo_consentimento_enviado}
-                            onChange={handleTermoConsentimentoEnviado}
-                            inputProps={{ 'aria-label': 'controlled' }}
-                            required={true}
-                            />
-                            <Typography>Sim</Typography>
+                  <Grid container spacing={2} padding={2}>
+                  
+                    <Grid item xs={12} sm={6} sx={{borderColor: 'lightgray', borderStyle: 'solid', padding: '10px', borderRadius: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                      <FileUpload uploaded_file_id={termo_consentimento_enviado} setUploadedFileId={handleTermoConsentimentoEnviado} text={'Clique ou arraste aqui para inserir o Termo de Consentimento Livre e Esclarecido'} />    
+                    </Grid>  
 
-                            <Button component="label" variant="contained" startIcon={<AttachFileIcon/>}>
-      Anexar arquivo
-      <VisuallyHiddenInput type="file" />
-    </Button>
-                    </Stack>
+                    <Grid item xs={12} sm={5} visibility={checkTermSent ? 'visible' : 'hidden'}>
+                      <DoneIcon sx={{color: 'green'}}/>
+                    </Grid>
+
+                  </Grid>  
                     
                 </Grid>
 
