@@ -6,9 +6,10 @@ import app from '../utils/firebase';
 
 interface FileDownloadProps {
   fileId: string; // Unique identifier or URL
+  buttonText: string; // Text to display on the button
 }
 
-const FileDownload: React.FC<FileDownloadProps> = ({ fileId }) => {
+const FileDownload: React.FC<FileDownloadProps> = ({ fileId, buttonText }) => {
   app; // Initialize Firebase app (ensure it's initialized)
 
   const downloadFile = async () => {
@@ -25,7 +26,7 @@ const FileDownload: React.FC<FileDownloadProps> = ({ fileId }) => {
   };
 
   return (
-    <button onClick={downloadFile}>Download PDF</button>
+    <button onClick={downloadFile}>{buttonText}</button>
   );
 };
 

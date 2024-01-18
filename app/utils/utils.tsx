@@ -1,4 +1,22 @@
 import dayjs, { Dayjs } from 'dayjs';
+// fileUtils.ts
+import { getStorage, ref, deleteObject } from 'firebase/storage';
+import app from './firebase';
+
+const storage = getStorage(app);
+
+export async function deleteFile(fileId: string): Promise<void> {
+  const fileRef = ref(storage, fileId);
+
+  try {
+    await deleteObject(fileRef);
+    console.log("File deleted successfully!");
+  } catch (error) {
+    console.error("Error deleting file:", error);
+    throw error; // Propagate the error if needed
+  }
+}
+
 
 export const escolaridadeOptions = ['Analfabeta', 
 'Fundamental - Incompleto',
@@ -259,7 +277,7 @@ export const defaultDictionary = {
     examesAnteriores: '',
     porqueInserirDIU: '',
     duvidasSobreInsercaoDIU: '',
-    possuiTermoConsentimento: false,
+    possuiTermoConsentimento: '',
 
  //   /* PhysicalExam */
     alturacm: '',
