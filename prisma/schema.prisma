@@ -10,6 +10,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Profissional {
+  id                   Int      @id @default(autoincrement())
+  cpf                  String   @unique
+  senha                String
+  email                String   @unique
+  nome                 String
+  nascimento           DateTime
+  matricula            String
+  corencrm             String
+  equipeVinculada      String
+  centroSaudeVinculado String
+}
+
 model Patient {
   id                                    Int      @id @default(autoincrement())
   nome                                  String
