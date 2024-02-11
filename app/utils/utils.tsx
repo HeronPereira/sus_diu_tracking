@@ -331,6 +331,26 @@ export const defaultDictionary = {
     seraInseridoNovoDIU: ''
 };
 
+
+export const defaultProfissional = { 
+    cpf: '',
+    senha: '',
+    nome: '',
+    email: '',
+    nascimento: dayjs(),
+    matricula: '',
+    corencrm: '',
+    equipeVinculada: '',
+    centroSaudeVinculado: '', 
+};
+
+enum messageTypes {
+    'error' , 'success' , 'info' , 'warning'
+  }
+
+  
+export type messageStyles = keyof typeof messageTypes;
+
 function utils(){
 
 }

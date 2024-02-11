@@ -9,6 +9,10 @@ import Link from "next/link";
 import React from "react";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { defaultProfissional, messageStyles } from "./utils/utils";
+import dayjs from "dayjs";
+import AlertComponent from "./components/AlertComponent";
+import axios from "axios";
 
 export default function Login() {
 
@@ -17,6 +21,147 @@ export default function Login() {
     const [showPassword, setShowPassword] = React.useState(false);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+    const [showAlert, setShowAlert] = React.useState(false);
+    const [alertMessage, setAlertMessage] = React.useState('');
+    const [alertType, setAlertType] = React.useState<messageStyles>('info');
+
+    let newProfissional = defaultProfissional;
+
+    const [cpfProfissional, setCpfProfissional] = React.useState('');
+    const [senhaProfissional, setSenhaProfissional] = React.useState('');
+    const [nomeProfissional, setNomeProfissional] = React.useState('');
+    const [emailProfissional, setEmailProfissional] = React.useState('');
+    const [nascimentoProfissional, setNascimentoProfissional] = React.useState(defaultProfissional['nascimento']);
+    const [matriculaProfissional, setMatriculaProfissional] = React.useState('');
+    const [corencrmProfissional, setCorencrmProfissional] = React.useState('');
+    const [equipeVinculadaProfissional, setEquipeVinculadaProfissional] = React.useState('');
+    const [centroSaudeVinculadoProfissional, setCentroSaudeVinculadoProfissional] = React.useState('');
+    
+    const handleNewProfissionalCPF = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const onlyContainsNumbers = /^\d+$/.test(event.target.value); 
+        if((onlyContainsNumbers || event.target.value === '') && event.target.value.length <= 11)
+        {
+        setCpfProfissional((event.target as HTMLInputElement).value);
+        newProfissional.cpf = (event.target as HTMLInputElement).value;
+        }
+      };
+
+    const handleNewProfissionalSenha = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSenhaProfissional((event.target as HTMLInputElement).value);
+        newProfissional.senha = (event.target as HTMLInputElement).value;
+      };
+      const handleNewProfissionalNome = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setNomeProfissional((event.target as HTMLInputElement).value);
+        newProfissional.nome = (event.target as HTMLInputElement).value;
+      };
+      const handleNewProfissionaleEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setEmailProfissional((event.target as HTMLInputElement).value);
+        newProfissional.email = (event.target as HTMLInputElement).value;
+      };
+    
+      const handleNewProfissionalMatricula = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setMatriculaProfissional((event.target as HTMLInputElement).value);
+        newProfissional.cpf = (event.target as HTMLInputElement).value;
+      };
+      const handleNewProfissionalCorencrm = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCorencrmProfissional((event.target as HTMLInputElement).value);
+        newProfissional.cpf = (event.target as HTMLInputElement).value;
+      };
+      const handleNewProfissionalEquipeVinculada = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setEquipeVinculadaProfissional((event.target as HTMLInputElement).value);
+        newProfissional.cpf = (event.target as HTMLInputElement).value;
+      };
+     
+      const checkAllFieldsAreFine = () => {
+        if ((/^\d+$/.test(newProfissional.cpf) == false) || (newProfissional.cpf.length != 11))
+        {
+            return false; 
+        }
+        else if (newProfissional.senha == '' || newProfissional.senha == undefined || newProfissional.senha == null)
+        {
+            return false;
+        }
+        else if (newProfissional.nome == '' || newProfissional.nome == undefined || newProfissional.nome == null)
+        {
+            return false;
+        }
+        else if (newProfissional.email == '' || newProfissional.email == undefined || newProfissional.email == null)
+        {
+            return false;
+        }
+        
+        else if (newProfissional.nascimento == dayjs() || newProfissional.nascimento == undefined || newProfissional.nascimento == null)
+        {
+            return false;
+        }
+        
+        else if (newProfissional.matricula == '' || newProfissional.matricula == undefined || newProfissional.matricula == null)
+        {
+            return false;
+        }
+        
+        else if (newProfissional.corencrm == '' || newProfissional.corencrm == undefined || newProfissional.corencrm == null)
+        {
+            return false;
+        }
+        else if (newProfissional.equipeVinculada == '' || newProfissional.equipeVinculada == undefined || newProfissional.equipeVinculada == null)
+        {
+            return false;
+        }
+        else if (newProfissional.centroSaudeVinculado == '' || newProfissional.centroSaudeVinculado == undefined || newProfissional.centroSaudeVinculado == null)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+      }
+
+      const clearFields = () =>{
+        setCpfProfissional('');
+        setSenhaProfissional('');
+        setNomeProfissional('');
+        setEmailProfissional('');
+        setNascimentoProfissional(defaultProfissional['nascimento']);
+        setMatriculaProfissional('');
+        setCorencrmProfissional('');
+        setEquipeVinculadaProfissional('');
+        setCentroSaudeVinculadoProfissional('');
+      }
+      const createProfessional = async (professional: typeof newProfissional) =>{
+          await axios.post('/api/profissional', professional);
+          setOpen(false);
+          setAlertType('success');
+          setAlertMessage('Profissional cadastrado com sucesso.');
+          setShowAlert(true);
+          clearFields();
+
+      }
+      const handleCadastroProfissional = () =>{
+        newProfissional.cpf = cpfProfissional;
+        newProfissional.senha = senhaProfissional;
+        newProfissional.nome = nomeProfissional;
+        newProfissional.email = emailProfissional;
+        newProfissional.nascimento = dayjs(nascimentoProfissional);
+        newProfissional.matricula = matriculaProfissional;
+        newProfissional.corencrm = corencrmProfissional;
+        newProfissional.equipeVinculada = equipeVinculadaProfissional;
+        newProfissional.centroSaudeVinculado = centroSaudeVinculadoProfissional;
+        
+        if (checkAllFieldsAreFine())
+        {
+            createProfessional(newProfissional);
+        }
+        else
+        {
+            setAlertType('error');
+            setAlertMessage('Preencha todos os campos corretamente.');
+            setShowAlert(true);
+        }
+       
+      }
   
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
       event.preventDefault();
@@ -63,7 +208,7 @@ export default function Login() {
                 </Grid>
                 
                 <Grid item xs={12} sm={9} sx={{padding: '12px'}}>
-                    <Button component={'label'} variant="outlined" onClick={() => setOpen(true)} endIcon={<PersonAddAlt1Icon />}>Cadastrar profissional</Button>
+                    <Button component={'label'} variant="outlined" onClick={() => {setOpen(!open);clearFields();}} endIcon={<PersonAddAlt1Icon />}>Cadastrar profissional</Button>
                 </Grid>
                 <Grid item xs={12} sm={3} alignSelf={'flex-end'} sx={{padding: '12px', display: 'flex',  flexDirection: 'column'}}>
                     <Link href="/cadastroPaciente"><Button component={'label'} variant="contained" endIcon={<LoginIcon />} >Entrar</Button></Link>
@@ -71,33 +216,53 @@ export default function Login() {
                 <Grid item xs={12} sm={12}>
                 {open && (
                         <FocusTrap disableEnforceFocus open>
+{/* -------------------------------------------------Cadastrar Profissional---------------------------------------------------------------- */}
                         <Box tabIndex={-1} sx={{ mt: 1, p: 1 }}>
                         <Grid container spacing={2} padding={2}>
                                 <Grid item xs={12} sm={12}>
                                     <Typography fontWeight={'bold'}>Cadastro de profissional</Typography>
                                 </Grid>
-                                <Grid item xs={12} sm={7}>
-                                    <TextField label="Nome" variant="outlined" fullWidth/>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField label="CPF" variant="outlined" fullWidth value={cpfProfissional} onChange={handleNewProfissionalCPF}/>
                                 </Grid>
-                                <Grid item xs={12} sm={5}>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField label="Senha" variant="outlined" fullWidth value={senhaProfissional} onChange={handleNewProfissionalSenha}/>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField label="Nome" variant="outlined" fullWidth value={nomeProfissional} onChange={handleNewProfissionalNome}/>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField label="Email" variant="outlined" fullWidth value={emailProfissional} onChange={handleNewProfissionaleEmail}/>
+                                </Grid>
+                                
+                                <Grid item xs={12} sm={4}>
+
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                        <DatePicker label="Data de nascimento"/>
+                                        
+                                        <DatePicker onChange={
+                                                            (event)=>{
+                                                                if(event)
+                                                                    setNascimentoProfissional(event);
+                                                            }
+                                                            }
+
+                                                    value={dayjs(nascimentoProfissional)}
+                                                     format="DD/MM/YYYY" label="Data de nascimento*"/>
                                     </LocalizationProvider>
                                 </Grid>
                                 <Grid item xs={12} sm={4}>
-                                    <TextField label="CPF" variant="outlined" fullWidth/>
+                                    <TextField label="Matrícula" variant="outlined" fullWidth value={matriculaProfissional} onChange={handleNewProfissionalMatricula}/>
                                 </Grid>
                                 <Grid item xs={12} sm={4}>
-                                    <TextField label="Matrícula" variant="outlined" fullWidth/>
+                                    <TextField label="COREN/CRM" variant="outlined" fullWidth value={corencrmProfissional} onChange={handleNewProfissionalCorencrm}/>
                                 </Grid>
+                                
+                                
                                 <Grid item xs={12} sm={4}>
-                                    <TextField label="COREN/CRM" variant="outlined" fullWidth/>
-                                </Grid>
-                                <Grid item xs={12} sm={12}>
-                                    <TextField label="Email" variant="outlined" fullWidth/>
+                                    <TextField label="Equipe Vinculada" variant="outlined" fullWidth value={equipeVinculadaProfissional} onChange={handleNewProfissionalEquipeVinculada}/>
                                 </Grid>
 
-                                <Grid item xs={12} sm={6}>
+                                <Grid item xs={12} sm={4}>
                             
                                 <InputLabel id="demo-simple-select-label">Centro de saúde de referência</InputLabel>
                                 <Select
@@ -105,75 +270,81 @@ export default function Login() {
                                 id="demo-simple-select"
                                 
                                 label="Centro de saúde de referência"
+                                value={centroSaudeVinculadoProfissional}
                                 
+                                onChange={(event)=>{setCentroSaudeVinculadoProfissional(event.target.value as string); newProfissional.centroSaudeVinculado = event.target.value as string}} 
                                 autoWidth
                                 >
-                                    <MenuItem value={0}>Abraão</MenuItem>
-                                    <MenuItem value={1}>Agronômica</MenuItem>
-                                    <MenuItem value={2}>Alto Ribeirão</MenuItem>
-                                    <MenuItem value={3}>Armação</MenuItem>
-                                    <MenuItem value={4}>Balneário</MenuItem>
-                                    <MenuItem value={5}>Barra da Lagoa</MenuItem>
-                                    <MenuItem value={6}>Cachoeira do Bom Jesus</MenuItem>
-                                    <MenuItem value={7}>Caieira da Barra do Sul</MenuItem>
-                                    <MenuItem value={8}>Campeche</MenuItem>
-                                    <MenuItem value={9}>Canasvieiras</MenuItem>
-                                    <MenuItem value={10}>Canto da Lagoa</MenuItem>
-                                    <MenuItem value={11}>Capivari</MenuItem>
-                                    <MenuItem value={12}>Capoeiras</MenuItem>
-                                    <MenuItem value={13}>Carianos</MenuItem>
-                                    <MenuItem value={14}>Centro</MenuItem>
-                                    <MenuItem value={15}>Coloninha</MenuItem>
-                                    <MenuItem value={16}>Coqueiros</MenuItem>
-                                    <MenuItem value={17}>Córrego Grande</MenuItem>
-                                    <MenuItem value={18}>Costa da Lagoa</MenuItem>
-                                    <MenuItem value={19}>Costeira do Pirajubaé</MenuItem>
-                                    <MenuItem value={20}>Estreito</MenuItem>
-                                    <MenuItem value={21}>Fazenda do Rio Tavares</MenuItem>
-                                    <MenuItem value={22}>Ingleses</MenuItem>
-                                    <MenuItem value={23}>Itacorubi</MenuItem>
-                                    <MenuItem value={24}>Jardim Atlântico</MenuItem>
-                                    <MenuItem value={25}>João Paulo</MenuItem>
-                                    <MenuItem value={26}>Jurerê</MenuItem>
-                                    <MenuItem value={27}>Lagoa da Conceição</MenuItem>
-                                    <MenuItem value={28}>Monte Cristo</MenuItem>
-                                    <MenuItem value={29}>Monte Serrat</MenuItem>
-                                    <MenuItem value={30}>Morro das Pedras</MenuItem>
-                                    <MenuItem value={31}>Novo Continente</MenuItem>
-                                    <MenuItem value={32}>Pantanal</MenuItem>
-                                    <MenuItem value={33}>Pântano do Sul</MenuItem>
-                                    <MenuItem value={34}>Ponta das Canas</MenuItem>
-                                    <MenuItem value={35}>Prainha</MenuItem>
-                                    <MenuItem value={36}>Ratones</MenuItem>
-                                    <MenuItem value={37}>Ribeirão da Ilha</MenuItem>
-                                    <MenuItem value={38}>Rio Tavares</MenuItem>
-                                    <MenuItem value={39}>Rio Vemelho</MenuItem>
-                                    <MenuItem value={40}>Saco dos Limões</MenuItem>
-                                    <MenuItem value={41}>Saco Grande</MenuItem>
-                                    <MenuItem value={42}>Santinho</MenuItem>
-                                    <MenuItem value={43}>Santo Antônio de Lisboa</MenuItem>
-                                    <MenuItem value={44}>Sapé</MenuItem>
-                                    <MenuItem value={45}>Tapera</MenuItem>
-                                    <MenuItem value={46}>Trindade</MenuItem>
-                                    <MenuItem value={47}>Vargem Grande</MenuItem>
-                                    <MenuItem value={48}>Vargem Pequena</MenuItem>
-                                    <MenuItem value={49}>Vila Aparecida</MenuItem>
-                                    <MenuItem value={50}>Policlínica Centro</MenuItem>
-                                    <MenuItem value={51}>Policlínica Rio Tavares</MenuItem>
-                                    <MenuItem value={52}>Policlínica Continente</MenuItem>
-                                    <MenuItem value={53}>Policlínica da Mulher e da Criança</MenuItem>
+                                     <MenuItem value={'Abraão'}>Abraão</MenuItem>
+                                <MenuItem value={'Agronômica'}>Agronômica</MenuItem>
+                                <MenuItem value={'Alto Ribeirão'}>Alto Ribeirão</MenuItem>
+                                <MenuItem value={'Armação'}>Armação</MenuItem>
+                                <MenuItem value={'Balneário'}>Balneário</MenuItem>
+                                <MenuItem value={'Barra da Lagoa'}>Barra da Lagoa</MenuItem>
+                                <MenuItem value={'Cachoeira do Bom Jesus'}>Cachoeira do Bom Jesus</MenuItem>
+                                <MenuItem value={'Caieira da Barra do Sul'}>Caieira da Barra do Sul</MenuItem>
+                                <MenuItem value={'Campeche'}>Campeche</MenuItem>
+                                <MenuItem value={'Canasvieiras'}>Canasvieiras</MenuItem>
+                                <MenuItem value={'Canto da Lagoa'}>Canto da Lagoa</MenuItem>
+                                <MenuItem value={'Capivari'}>Capivari</MenuItem>
+                                <MenuItem value={'Capoeiras'}>Capoeiras</MenuItem>
+                                <MenuItem value={'Carianos'}>Carianos</MenuItem>
+                                <MenuItem value={'Centro'}>Centro</MenuItem>
+                                <MenuItem value={'Coloninha'}>Coloninha</MenuItem>
+                                <MenuItem value={'Coqueiros'}>Coqueiros</MenuItem>
+                                <MenuItem value={'Córrego Grande'}>Córrego Grande</MenuItem>
+                                <MenuItem value={'Costa da Lagoa'}>Costa da Lagoa</MenuItem>
+                                <MenuItem value={'osteira do Pirajubaé'}>Costeira do Pirajubaé</MenuItem>
+                                <MenuItem value={'Estreito'}>Estreito</MenuItem>
+                                <MenuItem value={'Fazenda do Rio Tavares'}>Fazenda do Rio Tavares</MenuItem>
+                                <MenuItem value={'Ingleses'}>Ingleses</MenuItem>
+                                <MenuItem value={'Itacorubi'}>Itacorubi</MenuItem>
+                                <MenuItem value={'Jardim Atlântico'}>Jardim Atlântico</MenuItem>
+                                <MenuItem value={'João Paulo'}>João Paulo</MenuItem>
+                                <MenuItem value={'Jurerê'}>Jurerê</MenuItem>
+                                <MenuItem value={'Lagoa da Conceição'}>Lagoa da Conceição</MenuItem>
+                                <MenuItem value={'Monte Cristo'}>Monte Cristo</MenuItem>
+                                <MenuItem value={'Monte Serrat'}>Monte Serrat</MenuItem>
+                                <MenuItem value={'Morro das Pedras'}>Morro das Pedras</MenuItem>
+                                <MenuItem value={'Novo Continente'}>Novo Continente</MenuItem>
+                                <MenuItem value={'Pantanal'}>Pantanal</MenuItem>
+                                <MenuItem value={'Pântano do Sul'}>Pântano do Sul</MenuItem>
+                                <MenuItem value={'Ponta das Canas'}>Ponta das Canas</MenuItem>
+                                <MenuItem value={'Prainha'}>Prainha</MenuItem>
+                                <MenuItem value={'Ratones'}>Ratones</MenuItem>
+                                <MenuItem value={'Ribeirão da Ilha'}>Ribeirão da Ilha</MenuItem>
+                                <MenuItem value={'Rio Tavares'}>Rio Tavares</MenuItem>
+                                <MenuItem value={'Rio Vemelho'}>Rio Vemelho</MenuItem>
+                                <MenuItem value={'Saco dos Limões'}>Saco dos Limões</MenuItem>
+                                <MenuItem value={'Saco Grande'}>Saco Grande</MenuItem>
+                                <MenuItem value={'Santinho'}>Santinho</MenuItem>
+                                <MenuItem value={'Santo Antônio de Lisboa'}>Santo Antônio de Lisboa</MenuItem>
+                                <MenuItem value={'Sapé'}>Sapé</MenuItem>
+                                <MenuItem value={'Tapera'}>Tapera</MenuItem>
+                                <MenuItem value={'Trindade'}>Trindade</MenuItem>
+                                <MenuItem value={'Vargem Grande'}>Vargem Grande</MenuItem>
+                                <MenuItem value={'Vargem Pequena'}>Vargem Pequena</MenuItem>
+                                <MenuItem value={'Vila Aparecida'}>Vila Aparecida</MenuItem>
+                                <MenuItem value={'Policlínica Centro'}>Policlínica Centro</MenuItem>
+                                <MenuItem value={'Policlínica Rio Tavares'}>Policlínica Rio Tavares</MenuItem>
+                                <MenuItem value={'Policlínica Continente'}>Policlínica Continente</MenuItem>
+                                <MenuItem value={'Policlínica da Mulher e da Criança'}>Policlínica da Mulher e da Criança</MenuItem>
                             </Select>
                         </Grid>
-                        <Grid item xs={12} sm={6} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                            <Button component={'label'} variant="contained" onClick={() => setOpen(false)}>Cadastrar</Button>     
+                        <Grid item xs={12} sm={4} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                            <Button component={'label'} variant="contained" onClick={handleCadastroProfissional}>Cadastrar</Button>     
                         </Grid>
                                     
                         
+                        
                         </Grid>
                         </Box>
+{/* -------------------------------------------------Cadastrar Profissional---------------------------------------------------------------- */}
                         </FocusTrap>
                     )}
                 </Grid>
+                <AlertComponent message={alertMessage} messageType={alertType} isOpen={showAlert} setIsOpen={setShowAlert}/>:
+                
             </Grid>
          </Paper>
       </Box>
