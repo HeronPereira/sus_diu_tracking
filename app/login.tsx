@@ -1,6 +1,6 @@
 'use client'
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { Box, Button, FormControl, Grid, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput, Paper, Select, TextField, Typography } from "@mui/material";
+import { Backdrop, Box, Button, FormControl, Grid, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput, Paper, Select, TextField, Typography } from "@mui/material";
 import LoginIcon from '@mui/icons-material/Login';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import { FocusTrap } from '@mui/base/FocusTrap';
@@ -13,10 +13,15 @@ import { defaultProfissional, messageStyles } from "./utils/utils";
 import dayjs from "dayjs";
 import AlertComponent from "./components/AlertComponent";
 import axios from "axios";
+import { comparePassword } from "./utils/crypto";
 
 export default function Login() {
 
     const [open, setOpen] = React.useState(false);
+
+    const [showAdminLog, setShowAdminLog] = React.useState(false);
+    const [userAdmin, setUserAdmin] = React.useState('');
+    const [passwordAdmin, setPasswordAdmin] = React.useState('');
 
     const [showPassword, setShowPassword] = React.useState(false);
 
@@ -129,6 +134,8 @@ export default function Login() {
         setCorencrmProfissional('');
         setEquipeVinculadaProfissional('');
         setCentroSaudeVinculadoProfissional('');
+        setUserAdmin('');
+        setPasswordAdmin('');
       }
       const createProfessional = async (professional: typeof newProfissional) =>{
           await axios.post('/api/profissional', professional);
@@ -139,6 +146,67 @@ export default function Login() {
           clearFields();
 
       }
+
+      const adminLog =  (user:string, pass:string) =>{
+        if (user != "")
+        {
+            if(pass != "")
+            {
+                checkAllowCadastro(user, pass);
+            }
+            else
+            {
+                setAlertType('error');
+                setAlertMessage('Senha obrigatória.');
+                setShowAlert(true);
+            }
+        }
+        else
+        {
+                setAlertType('error');
+                setAlertMessage('Usuário obrigatório.');
+                setShowAlert(true);
+        }
+        setShowAdminLog(false);
+      }
+
+      const checkAllowCadastro = async (user:string, pass:string) =>{
+          
+            try {
+                const foundedAdmin = await axios.get('/api/admin/' + user);
+                const isPasswordValid = await comparePassword(pass, foundedAdmin.data.senha);
+
+                if (isPasswordValid)
+                {
+                    setOpen(true);
+                    setAlertType('success');
+                    setAlertMessage('Cadastro de usuário autorizado.');
+                    
+                }
+                else
+                {
+                    setOpen(false);
+                    setAlertType('error');
+                    setAlertMessage('Cadastro de usuário não autorizado.');
+                
+                }
+                
+        
+              } 
+              catch (error) {
+                    setOpen(false);
+                    setAlertType('error');
+                    setAlertMessage('Usuário admin não encontrado.');
+                  
+              }
+              setShowAlert(true);
+            clearFields();
+            setShowAdminLog(false);
+          }
+        
+            
+          
+      
       const handleCadastroProfissional = () =>{
         newProfissional.cpf = cpfProfissional;
         newProfissional.senha = senhaProfissional;
@@ -208,7 +276,7 @@ export default function Login() {
                 </Grid>
                 
                 <Grid item xs={12} sm={9} sx={{padding: '12px'}}>
-                    <Button component={'label'} variant="outlined" onClick={() => {setOpen(!open);clearFields();}} endIcon={<PersonAddAlt1Icon />}>Cadastrar profissional</Button>
+                    <Button component={'label'} variant="outlined" onClick={() => setShowAdminLog(true)} endIcon={<PersonAddAlt1Icon />}>Cadastrar profissional</Button>
                 </Grid>
                 <Grid item xs={12} sm={3} alignSelf={'flex-end'} sx={{padding: '12px', display: 'flex',  flexDirection: 'column'}}>
                     <Link href="/cadastroPaciente"><Button component={'label'} variant="contained" endIcon={<LoginIcon />} >Entrar</Button></Link>
@@ -343,7 +411,45 @@ export default function Login() {
                         </FocusTrap>
                     )}
                 </Grid>
-                <AlertComponent message={alertMessage} messageType={alertType} isOpen={showAlert} setIsOpen={setShowAlert}/>:
+                <AlertComponent message={alertMessage} messageType={alertType} isOpen={showAlert} setIsOpen={setShowAlert}/>
+                <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={showAdminLog}>
+      <Paper elevation={3}  sx={{display: 'flex', bgcolor: 'white', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '50%', width: '50%'}}>
+                
+                <Grid container spacing={2} padding={2}>
+                    <Grid item xs={12} sm={12}>
+                        <Typography variant='h6' fontWeight={'bold'} sx={{ margin: '20px', width: '100%', display: 'flex' , flexDirection: 'row'}}>Credenciais de Admin são necessarias:</Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={12}>
+                        <TextField
+                            label="Usuário"
+                            variant="outlined"
+                            fullWidth
+                            value={userAdmin}
+                            onChange={(event) => setUserAdmin(event.target.value)}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={12}>
+                        <TextField
+                            label="Senha"
+                            variant="outlined"
+                            fullWidth
+                            value={passwordAdmin}
+                            onChange={(event) => setPasswordAdmin(event.target.value)}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}  sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'row'}}>
+                        <Button variant='contained' sx={{bgcolor: '#265D9B'}} size='large' onClick={() => {adminLog(userAdmin, passwordAdmin)}}>Continuar</Button>
+                    </Grid>
+                    
+                    <Grid item xs={12} sm={6}  sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'row'}}>
+                        <Button variant='contained' sx={{bgcolor: '#265D9B'}} size='large' onClick={() => {setShowAdminLog(false)}}>Sair</Button>
+                    </Grid>
+                </Grid>
+            </Paper>
+          
+      </Backdrop>
                 
             </Grid>
          </Paper>
