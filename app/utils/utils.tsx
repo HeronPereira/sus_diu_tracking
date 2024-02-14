@@ -2,6 +2,7 @@ import dayjs, { Dayjs } from 'dayjs';
 // fileUtils.ts
 import { getStorage, ref, deleteObject } from 'firebase/storage';
 import app from './firebase';
+import { LoggedIn } from './authclass';
 
 const storage = getStorage(app);
 
@@ -16,7 +17,6 @@ export async function deleteFile(fileId: string): Promise<void> {
     throw error; // Propagate the error if needed
   }
 }
-
 
 export const escolaridadeOptions = ['Analfabeta', 
 'Fundamental - Incompleto',

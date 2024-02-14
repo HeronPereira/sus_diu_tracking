@@ -14,10 +14,17 @@ import dayjs from "dayjs";
 import AlertComponent from "./components/AlertComponent";
 import axios from "axios";
 import { comparePassword } from "./utils/crypto";
+import { useRouter } from 'next/navigation';
+import { logstate } from "@/publicflag";
+import { authstate } from "@/middleware";
 
 export default function Login() {
+    const router = useRouter();
 
     const [open, setOpen] = React.useState(false);
+
+    const [loginCpf, setLoginCpf] = React.useState('');
+    const [loginSenha, setLoginSenha] = React.useState('');
 
     const [showAdminLog, setShowAdminLog] = React.useState(false);
     const [userAdmin, setUserAdmin] = React.useState('');
@@ -43,6 +50,17 @@ export default function Login() {
     const [equipeVinculadaProfissional, setEquipeVinculadaProfissional] = React.useState('');
     const [centroSaudeVinculadoProfissional, setCentroSaudeVinculadoProfissional] = React.useState('');
     
+    const handleLoginCpf = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const onlyContainsNumbers = /^\d+$/.test(event.target.value); 
+        if((onlyContainsNumbers || event.target.value === '') && event.target.value.length <= 11)
+        {
+        setLoginCpf((event.target as HTMLInputElement).value);
+        }
+      };
+      const handleLoginSenha = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setLoginSenha((event.target as HTMLInputElement).value);
+      };
+
     const handleNewProfissionalCPF = (event: React.ChangeEvent<HTMLInputElement>) => {
         const onlyContainsNumbers = /^\d+$/.test(event.target.value); 
         if((onlyContainsNumbers || event.target.value === '') && event.target.value.length <= 11)
@@ -170,6 +188,29 @@ export default function Login() {
         setShowAdminLog(false);
       }
 
+      const profissionalLog =  (cpf:string, pass:string) =>{
+
+        if (cpf != "")
+        {
+            if(pass != "")
+            {
+                checkGrantAccess(cpf, pass);
+            }
+            else
+            {
+                setAlertType('error');
+                setAlertMessage('Senha obrigatória.');
+                setShowAlert(true);
+            }
+        }
+        else
+        {
+                setAlertType('error');
+                setAlertMessage('Usuário obrigatório.');
+                setShowAlert(true);
+        }
+      }
+
       const checkAllowCadastro = async (user:string, pass:string) =>{
           
             try {
@@ -204,6 +245,36 @@ export default function Login() {
             setShowAdminLog(false);
           }
         
+          const checkGrantAccess = async (cpf:string, pass:string) =>{
+          
+            try {
+                const foundedProfissional = await axios.get('/api/profissional/' + cpf);
+                const isPasswordValid = await comparePassword(pass, foundedProfissional.data.senha);
+
+                if (isPasswordValid)
+                {
+                    // habilita o login
+                    router.push('/Dashboard');
+                    
+                }
+                else
+                {
+                    // nega o login
+                    setAlertType('error');
+                    setAlertMessage('Usuário ou senha incorretos!');
+                    setShowAlert(true);
+                }
+                
+        
+              } 
+              catch (error) {
+                setAlertType('error');
+                setAlertMessage('Usuário ou senha incorretos!');
+                setShowAlert(true);
+                  
+              }
+
+          }
             
           
       
@@ -249,6 +320,8 @@ export default function Login() {
                         variant="outlined"
                         name="cpf"
                         fullWidth
+                        value={loginCpf}
+                        onChange={handleLoginCpf}
                     />
                 </Grid>
                 <Grid item xs={12} sm={12} sx={{padding: '12px'}}>
@@ -257,6 +330,8 @@ export default function Login() {
                     <OutlinedInput
                         id="outlined-adornment-password"
                         type={showPassword ? 'text' : 'password'}
+                        value={loginSenha}
+                        onChange={handleLoginSenha}
                         endAdornment={
                         <InputAdornment position="end">
                             <IconButton
@@ -268,6 +343,7 @@ export default function Login() {
                             {showPassword ? <VisibilityOff /> : <Visibility />}
                             </IconButton>
                         </InputAdornment>
+                
                         }
                         label="Password"
                     />
@@ -279,7 +355,7 @@ export default function Login() {
                     <Button component={'label'} variant="outlined" onClick={() => setShowAdminLog(true)} endIcon={<PersonAddAlt1Icon />}>Cadastrar profissional</Button>
                 </Grid>
                 <Grid item xs={12} sm={3} alignSelf={'flex-end'} sx={{padding: '12px', display: 'flex',  flexDirection: 'column'}}>
-                    <Link href="/cadastroPaciente"><Button component={'label'} variant="contained" endIcon={<LoginIcon />} >Entrar</Button></Link>
+                    <Button component={'label'} variant="contained" onClick={()=>{profissionalLog(loginCpf, loginSenha)}} endIcon={<LoginIcon />} >Entrar</Button>
                 </Grid>
                 <Grid item xs={12} sm={12}>
                 {open && (
