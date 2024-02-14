@@ -1,10 +1,7 @@
-import Image from 'next/image'
 
 import Navbar from '../components/Navbar'
 import { Box, Grid } from '@mui/material'
 import SearchTable from '../components/SearchTable'
-import FileUpload from '../components/FileUpload'
-import FileDownload from '../components/FileDownload'
 
 export default function BuscaPaciente() {
   return (

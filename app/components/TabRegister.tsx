@@ -13,7 +13,6 @@ import DiuInsertionForm from './DiuInsertionForm';
 import PostDiuInsertionForm from './PostDiuInsertionForm';
 
 import Button from '@mui/material/Button'
-import dayjs, { Dayjs } from 'dayjs';
 import { defaultDictionary } from '../utils/utils';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';

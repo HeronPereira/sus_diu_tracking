@@ -2,7 +2,6 @@ import dayjs, { Dayjs } from 'dayjs';
 // fileUtils.ts
 import { getStorage, ref, deleteObject } from 'firebase/storage';
 import app from './firebase';
-import { LoggedIn } from './authclass';
 
 const storage = getStorage(app);
 

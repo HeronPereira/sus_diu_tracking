@@ -5,7 +5,6 @@ import LoginIcon from '@mui/icons-material/Login';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import { FocusTrap } from '@mui/base/FocusTrap';
 
-import Link from "next/link";
 import React from "react";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -15,8 +14,6 @@ import AlertComponent from "./components/AlertComponent";
 import axios from "axios";
 import { comparePassword } from "./utils/crypto";
 import { useRouter } from 'next/navigation';
-import { logstate } from "@/publicflag";
-import { authstate } from "@/middleware";
 
 export default function Login() {
     const router = useRouter();

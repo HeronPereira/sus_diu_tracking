@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import TabRegister from '../components/TabRegister'
 
 import Navbar from '../components/Navbar'

@@ -2,14 +2,10 @@
 import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button'
-import MenuItem from '@mui/material/MenuItem';
 
-import InputAdornment from '@mui/material/InputAdornment';
-import { Box, Grid, InputLabel, Select, Stack, Switch, Typography, Checkbox, RadioGroup, FormControlLabel, Radio, Collapse, Alert, IconButton, Backdrop, Paper } from '@mui/material';
-import { bool, number } from 'yup';
+import { Box, Grid, Stack, Typography, RadioGroup, FormControlLabel, Radio, Backdrop, Paper } from '@mui/material';
 
 
-import CloseIcon from '@mui/icons-material/Close';
 
 
 function PhysicalExamForm({goBackFirstTab, info, setInfo, setReady}:{goBackFirstTab: (inf: string) => void, info: any, setInfo: (inf: any) => void,  setReady: (inf: boolean) => void}) {

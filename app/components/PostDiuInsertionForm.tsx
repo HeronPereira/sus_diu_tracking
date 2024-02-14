@@ -5,11 +5,10 @@ import Button from '@mui/material/Button'
 import MenuItem from '@mui/material/MenuItem';
 
 import { Box, Grid, InputLabel, Rating, Select, Slider, Stack, Checkbox, Typography, FormControl, SelectChangeEvent, Chip, RadioGroup, FormControlLabel, Radio, Collapse, Alert, IconButton, Paper, Backdrop } from '@mui/material';
-import { bool, number } from 'yup';
+
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
-import CloseIcon from '@mui/icons-material/Close';
 import dayjs, { Dayjs } from 'dayjs';
 
 

@@ -4,20 +4,13 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button'
 import MenuItem from '@mui/material/MenuItem';
 
-import InputAdornment from '@mui/material/InputAdornment';
-import { Alert, Backdrop, Box, Checkbox, Chip, Collapse, FormControl, FormControlLabel, FormLabel, Grid, IconButton, InputLabel, Paper, Radio, RadioGroup, Select, SelectChangeEvent, Stack, Typography, styled } from '@mui/material';
-import { bool, number, object } from 'yup';
+import {  Backdrop, Box, FormControlLabel, FormLabel, Grid, IconButton, InputLabel, Paper, Radio, RadioGroup, Select, SelectChangeEvent, Stack, Typography, styled } from '@mui/material';
+
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
-
-import CloseIcon from '@mui/icons-material/Close';
 import dayjs, { Dayjs } from 'dayjs';
-import { string } from 'zod';
-import { UploadFile } from '@mui/icons-material';
 import FileUpload from './FileUpload';
 import DoneIcon from '@mui/icons-material/Done';
 

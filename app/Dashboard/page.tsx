@@ -1,9 +1,8 @@
 "use client"
-import Image from 'next/image'
 
 import Navbar from '../components/Navbar'
-import { Box, Button, Grid, Typography } from '@mui/material'
-import SearchTable from '../components/SearchTable'
+import { Box, Typography } from '@mui/material'
+
 import React from "react";
 import { Chart } from "react-google-charts";
 import { useRouter } from 'next/navigation'

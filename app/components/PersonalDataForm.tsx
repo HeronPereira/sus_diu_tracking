@@ -9,10 +9,7 @@ import { Alert, Backdrop, Box, Collapse, Grid, IconButton, InputLabel, Paper, Se
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
-import CloseIcon from '@mui/icons-material/Close';
 import dayjs, { Dayjs } from 'dayjs';
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
 
 
 function PersonalDataForm ({ info, setInfo, setReady}:{info: any, setInfo: (inf: any) => void,  setReady: (inf: boolean) => void}) {
