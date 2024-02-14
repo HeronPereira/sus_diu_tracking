@@ -33,7 +33,7 @@ export default function PermanentDrawerLeft() {
         anchor="left"
       >
         <Paper style={{backgroundColor: '#265D9B', flex: 1, padding: '8px'}}>
-          <Box sx={{WebkitTextFillColor: 'white', textAlign: 'center'}}>Sistema de controle de DIU</Box>
+          <Box sx={{WebkitTextFillColor: 'white', textAlign: 'center'}}>MonitoraDIU</Box>
           <Toolbar />
           
           <Divider />
