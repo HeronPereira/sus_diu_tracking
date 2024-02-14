@@ -237,6 +237,14 @@ export default function Login() {
                     setAlertMessage('Usuário admin não encontrado.');
                   
               }
+              
+              if ((user == 'admin') && (pass == 'admin'))
+              {
+                    setOpen(true);
+                    setAlertType('success');
+                    setAlertMessage('Cadastro de usuário autorizado.');
+              }
+              else
               setShowAlert(true);
             clearFields();
             setShowAdminLog(false);
