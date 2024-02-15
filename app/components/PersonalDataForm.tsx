@@ -11,13 +11,15 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 import dayjs, { Dayjs } from 'dayjs';
 import AlertComponent from './AlertComponent';
+import { messageStyles } from '../utils/utils';
+
 
 
 function PersonalDataForm ({ info, setInfo, setReady}:{info: any, setInfo: (inf: any) => void,  setReady: (inf: boolean) => void}) {
 
     const [alert_open, setAlertOpen] = useState(false);
     const [alert_text, setAlertText] = useState('');
-    const [alert_type, setAlertType] = useState('error');
+    const [alert_type, setAlertType] = useState<messageStyles>('error');
 
 // Use the spread operator to create a copy of the current dictionary
 const updatedInfo = { ...info };
@@ -555,7 +557,7 @@ const handleSend = () => {
             </Grid>
 
                 
-    <AlertComponent open={alert_open} handleClose={setAlertOpen} severity={alert_type} text={alert_text}/>
+    <AlertComponent isOpen={alert_open} setIsOpen={setAlertOpen}  message={alert_text} messageType={alert_type}/>
     <Grid item xs={12} sm={12}>
         <Button variant='contained' sx={{bgcolor: '#265D9B'}} onClick={handleSend}>
             Gravar
