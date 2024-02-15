@@ -555,7 +555,7 @@ const handleSend = () => {
             </Grid>
 
                 
-    <AlertComponent open={alert_open} handleClose={handleCloseAlert} severity={alert_severity} text={alert_text}/>
+    <AlertComponent open={alert_open} handleClose={setAlertOpen} severity={alert_type} text={alert_text}/>
     <Grid item xs={12} sm={12}>
         <Button variant='contained' sx={{bgcolor: '#265D9B'}} onClick={handleSend}>
             Gravar
