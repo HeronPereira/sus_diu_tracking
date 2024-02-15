@@ -97,10 +97,7 @@ const checkAllFieldsAreFine = () => {
     {
         return false; 
     }
-    else if (complemento_paciente == '' || complemento_paciente == undefined || complemento_paciente == null)
-    {
-        return false;
-    }
+
     else if (bairro_paciente == '' || bairro_paciente == undefined || bairro_paciente == null)
     {
         return false;
@@ -294,7 +291,7 @@ const handleSend = () => {
             
             <Grid item xs={12} sm={6}>
                 <TextField
-                    required={true}
+                    required={false}
                     label="Complemento"
                     variant="outlined"
                     margin="normal"

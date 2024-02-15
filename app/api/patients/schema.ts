@@ -9,7 +9,7 @@ const schema = z.object({
     cep: z.string().min(8),
     endereco: z.string().min(1),
     numero: z.string().min(1),
-    complemento: z.string().min(1),
+    complemento: z.string().optional(),
     bairro: z.string().min(1),
     cidade: z.string().min(1),
     telefone: z.string().min(7),
