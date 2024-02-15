@@ -548,7 +548,7 @@ const handleSend = () => {
                         }
                             } value={dayjs(data_ultimo_preventivo_paciente)}
                             
-                            format="DD/MM/YYYY" label="Data da última menstruação"/>
+                            format="DD/MM/YYYY" label="Data do último preventivo"/>
                     </LocalizationProvider>
                 </Grid>
 
