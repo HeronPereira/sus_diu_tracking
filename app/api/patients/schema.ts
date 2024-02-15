@@ -37,7 +37,7 @@ const schema = z.object({
     contraceptivosAtuais: z.string().optional(),
     ultimoPreventivoAlterado: z.string().optional(),
     dataUltimoPreventivo: z.string().optional(),
-    possuiQualIst: z.string(),
+    possuiQualIst: z.string().optional(),
     fezQualCirurgiaPelvicaUterina: z.string().optional(),
     problemasSaude: z.string().optional(),
     medicacaoEmUso: z.string().optional(),
@@ -45,8 +45,8 @@ const schema = z.object({
     fezQualExameAlteracaoUtero: z.string().optional(),
     examesAnteriores: z.string().optional(),
     porqueInserirDIU: z.string().optional(),
-    duvidasSobreInsercaoDIU: z.string(),
-    possuiTermoConsentimento: z.string(),
+    duvidasSobreInsercaoDIU: z.string().optional(),
+    possuiTermoConsentimento: z.string().optional(),
 
     /* PhysicalExam */
     alturacm: z.string().optional(),
