@@ -48,7 +48,7 @@ function HistoricalDataForm ({goBackFirstTab, info, setInfo, setReady}:{goBackFi
   const [exames_anteriores_paciente, setExamesAnterioresPaciente] = useState(info['examesAnteriores']);
   const [porque_inserir_diu_paciente, setPorqueInserirDiuPaciente] = useState(info['porqueInserirDIU']);
 
-  const [quais_duvidas_sobre_insercao_diu_paciente, setQuaisDuvidasSobreInsercaoDiuPaciente] = useState(info['duvidasSobreInsercaoDIU']);
+  const [quais_duvidas_sobre_insercao_diu_paciente, setQuaisDuvidasSobreInsercaoDiuPaciente] = useState<string>(info['duvidasSobreInsercaoDIU']);
 
   
 
@@ -186,7 +186,7 @@ function HistoricalDataForm ({goBackFirstTab, info, setInfo, setReady}:{goBackFi
 
   
 
-const [termo_consentimento_enviado, setTermoConsentimentoEnviado] = React.useState(info['possuiTermoConsentimento']);
+const [termo_consentimento_enviado, setTermoConsentimentoEnviado] = React.useState<string>(info['possuiTermoConsentimento']);
 const [checkTermSent, setCheckTermSent] = useState(false);
 
 

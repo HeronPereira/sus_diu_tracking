@@ -5,7 +5,7 @@ const schema = z.object({
     nome: z.string().min(2),
     cpf: z.string().min(1),
     cns: z.string().min(1),
-     nascimento: z.string().min(1),
+    nascimento: z.string().min(1),
     cep: z.string().min(8),
     endereco: z.string().min(1),
     numero: z.string().min(1),
@@ -46,7 +46,7 @@ const schema = z.object({
     examesAnteriores: z.string().optional(),
     porqueInserirDIU: z.string().optional(),
     duvidasSobreInsercaoDIU: z.string(),
-    possuiTermoConsentimento: z.boolean(),
+    possuiTermoConsentimento: z.string(),
 
     /* PhysicalExam */
     alturacm: z.string().optional(),
