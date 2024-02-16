@@ -87,11 +87,11 @@ const [backdrop_show, setBackdropShow] = useState(false);
   
   const checkAllFieldsAreFine = () => {
   
-      if ((/^\d+$/.test(histerometria_paciente) == false) || (histerometria_paciente.length >= 3))
+      if ((/^[0-9.,\b]+$/.test(histerometria_paciente) == false) || (histerometria_paciente.length >= 4))
       {
           return false; 
       }
-      else if ((/^\d+$/.test(tamanho_fio_paciente) == false) || (tamanho_fio_paciente.length >= 3))
+      else if ((/^[0-9.,\b]+$/.test(tamanho_fio_paciente) == false) || (tamanho_fio_paciente.length >= 4))
       {
           return false; 
       }
@@ -252,8 +252,8 @@ const [backdrop_show, setBackdropShow] = useState(false);
                             variant="outlined"
                             margin="normal"
                             name="nome"
-                            value={histerometria_paciente}
-                            onChange={(event)=>{const onlyContainsNumbers = /^\d+$/.test(event.target.value); if((onlyContainsNumbers || event.target.value === '')&&(event.target.value.length <= 2)){setHisterometriaPaciente(event.target.value)}}}
+                            value={histerometria_paciente}                  
+                            onChange={(event)=>{const onlyContainsNumbers = /^[0-9.,\b]+$/.test(event.target.value); if((onlyContainsNumbers || event.target.value === '')&&(event.target.value.length <= 2)){setHisterometriaPaciente(event.target.value)}}}
                             fullWidth
                             />
                 </Grid>
@@ -266,7 +266,7 @@ const [backdrop_show, setBackdropShow] = useState(false);
                             margin="normal"
                             name="nome"
                             value={tamanho_fio_paciente}
-                            onChange={(event)=>{const onlyContainsNumbers = /^\d+$/.test(event.target.value); if((onlyContainsNumbers || event.target.value === '')&&(event.target.value.length <= 2)){setTamanhoFioPaciente(event.target.value)}}}
+                            onChange={(event)=>{const onlyContainsNumbers = /^[0-9.,\b]+$/.test(event.target.value); if((onlyContainsNumbers || event.target.value === '')&&(event.target.value.length <= 2)){setTamanhoFioPaciente(event.target.value)}}}
                             fullWidth
                             />
                 </Grid>

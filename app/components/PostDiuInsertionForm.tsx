@@ -286,7 +286,7 @@ const handleSend = () => {
                             margin="normal"
                             name="nome"
                             value={tamanho_do_fio_pos_insercao_paciente}
-                            onChange={(event)=>{const onlyContainsNumbers = /^\d+$/.test(event.target.value); if((onlyContainsNumbers || event.target.value === '') && event.target.value.length <= 2){setTamanhoDoFioPosInsercaoPaciente(event.target.value)}}}
+                            onChange={(event)=>{const onlyContainsNumbers = /^[0-9.,\b]+$/.test(event.target.value); if((onlyContainsNumbers || event.target.value === '') && event.target.value.length <= 2){setTamanhoDoFioPosInsercaoPaciente(event.target.value)}}}
                             fullWidth
                             />
                 </Grid>
